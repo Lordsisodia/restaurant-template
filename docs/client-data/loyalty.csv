@@ -1,0 +1,4 @@
+restaurant_id,full_name,email,phone,points,tier,last_visit
+00000000-0000-0000-0000-000000000003,Ava Nguyen,ava@example.com,+62 812-3456-7890,125,bronze,2025-10-15
+00000000-0000-0000-0000-000000000003,Diego Martinez,diego@example.com,+62 811-2233-4455,420,silver,2025-10-10
+00000000-0000-0000-0000-000000000003,Sophia Chen,sophia@example.com,+62 813-9988-7766,980,gold,2025-09-28

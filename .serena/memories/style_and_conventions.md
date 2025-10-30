@@ -1,0 +1,1 @@
+SEO approach: use Next.js App Router generateMetadata per route; include og: {title, description, url, images}, twitter: {card, title, description, images}, and JSON-LD (Blog/BlogPosting) when needed. Avoid heavy runtime dependencies; compute from tenant + post data.

@@ -1,0 +1,12 @@
+mcpServers:
+  supabase:
+    command: npx
+    args:
+      - supabase-mcp
+      - start
+    env:
+      # The access token is stored in your shell (e.g. export SUPABASE_ACCESS_TOKEN=...)
+      SUPABASE_ACCESS_TOKEN: ${SUPABASE_ACCESS_TOKEN}
+      SUPABASE_PROJECT_REF: ntrklmkzyfnrtfbpdypd
+      # comma-separated scopes the MCP server can use. Trim or expand as desired.
+      SUPABASE_SCOPES: sql,types,logs

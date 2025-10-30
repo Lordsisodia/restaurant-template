@@ -1,0 +1,1 @@
+SEO checklist for later: add generateMetadata for /blog/[slug], add JSON-LD per post, canonical URLs, pagination with rel=next/prev, category pages with index/noindex rules, sitemap.xml integration, and image alt/width/height for cards.
