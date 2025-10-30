@@ -1,0 +1,123 @@
+═══════════════════════════════════════════════════════════════
+ MENU DOMAIN - IMPROVED STRUCTURE
+═══════════════════════════════════════════════════════════════
+
+BEFORE (Complex & Scattered):
+──────────────────────────────
+menu/
+├── menu-category-templates/
+│   └── primary/
+│       ├── components/          ← Components
+│       ├── hooks/               ❌ Shared hooks buried here
+│       ├── types/               ❌ Shared types buried here
+│       └── utils/               ❌ Empty folder
+└── menu-item-card-templates/
+    └── primary/
+        ├── components/          ← Components
+        ├── hooks/               ❌ Empty folder
+        ├── types/               ❌ Shared types buried here
+        └── utils/               ❌ Shared utils buried here
+
+Problems:
+❌ Shared code scattered across templates
+❌ Empty folders everywhere
+❌ Hard to find types/hooks
+❌ No template variants
+
+═══════════════════════════════════════════════════════════════
+
+AFTER (Clean & Organized):
+──────────────────────────────
+menu/
+├── types/                       ✅ ALL SHARED TYPES
+│   ├── menu.types.ts
+│   ├── menu.constants.ts
+│   └── index.ts
+│
+├── hooks/                       ✅ ALL SHARED HOOKS
+│   ├── use-menu.ts
+│   ├── menu.service.ts
+│   └── index.ts
+│
+├── utils/                       ✅ ALL SHARED UTILS
+│   ├── menu-images.ts
+│   └── index.ts
+│
+└── menu-header-templates/
+    ├── primary/                 ✅ Working template
+    │   ├── components/          (Only components)
+    │   └── index.ts
+    ├── template-2/              📝 Skeleton ready
+    │   ├── components/
+    │   └── README.md
+    └── template-3/              📝 Skeleton ready
+        ├── components/
+        └── README.md
+
+Benefits:
+✅ Shared code at root (easy to find)
+✅ Templates only have components
+✅ No empty folders
+✅ Ready for template variants
+✅ Clean separation of concerns
+
+═══════════════════════════════════════════════════════════════
+
+TEMPLATE PATTERN:
+──────────────────
+
+ComponentName-templates/
+├── primary/              ✅ Main implementation (working)
+│   ├── components/      (Component files)
+│   └── index.ts         (Exports components only)
+│
+├── template-2/          📝 Alternative design (placeholder)
+│   ├── components/      (Empty, ready for Phase 2)
+│   └── README.md        (Explains planned features)
+│
+└── template-3/          📝 Alternative design (placeholder)
+    ├── components/      (Empty, ready for Phase 2)
+    └── README.md        (Explains planned features)
+
+═══════════════════════════════════════════════════════════════
+
+IMPORT PATTERNS:
+─────────────────
+
+From root-level shared code:
+  import { MenuItem } from '@/domains/menu/types';
+  import { useMenuCategories } from '@/domains/menu/hooks';
+  import { getMenuItemImage } from '@/domains/menu/utils';
+
+From specific template:
+  import { MenuHeader } from '@/domains/menu/menu-header-templates/primary';
+
+From main barrel export (RECOMMENDED):
+  import {
+    type MenuItem,           // Type
+    useMenuCategories,       // Hook
+    MenuHeader,              // Component
+  } from '@/domains/menu';
+
+═══════════════════════════════════════════════════════════════
+
+TEMPLATE COUNT:
+────────────────
+
+✅ 7 Template Categories Created:
+   1. menu-header-templates       (1 component)
+   2. menu-category-templates     (2 components)
+   3. menu-item-card-templates    (2 components)
+   4. menu-item-detail-templates  (1 component)
+   5. menu-grid-templates         (1 component)
+   6. menu-state-templates        (6 components)
+   7. menu-search-templates       (0 components - Phase 2)
+
+📝 Each has 3 variants: primary, template-2, template-3
+📝 Only primary is implemented, others are placeholders
+
+═══════════════════════════════════════════════════════════════
+Status: ✅ REORGANIZATION COMPLETE
+Pattern: Root-level shared + Template variants
+Date: October 26, 2025
+═══════════════════════════════════════════════════════════════

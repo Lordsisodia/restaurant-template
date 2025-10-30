@@ -1,0 +1,34 @@
+#!/usr/bin/env bash
+# Guard critical UI file from accidental edits.
+# To override intentionally, include [override-protected] anywhere in the commit message.
+
+set -euo pipefail
+
+PROTECTED_FILES=(
+  "restaurant-template/src/domains/shared/components/mobile-drawer/primary/FullScreenDrawer.tsx"
+)
+
+MSG_FILE="$1"
+
+# Get staged file list
+CHANGED=$(git diff --cached --name-only || true)
+
+BLOCKED=()
+for f in "${PROTECTED_FILES[@]}"; do
+  if echo "$CHANGED" | grep -qx "$f"; then
+    BLOCKED+=("$f")
+  fi
+done
+
+if [ ${#BLOCKED[@]} -gt 0 ]; then
+  if ! grep -q "\[override-protected\]" "$MSG_FILE"; then
+    echo "✖ Commit blocked: protected file(s) changed:" >&2
+    for f in "${BLOCKED[@]}"; do echo "  - $f" >&2; done
+    echo >&2
+    echo "Add [override-protected] to the commit message to proceed intentionally," >&2
+    echo "or rerun with 'git commit -n' to bypass hooks (not recommended)." >&2
+    exit 1
+  fi
+fi
+
+exit 0

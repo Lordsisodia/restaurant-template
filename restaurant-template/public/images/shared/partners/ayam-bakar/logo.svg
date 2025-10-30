@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128" fill="none">
+  <rect width="128" height="128" rx="20" fill="#B91C1C"/>
+  <path d="M36 80c8-14 12-22 28-22s20 8 28 22" stroke="#fff" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M64 28c10 8 16 16 16 26 0 10-6 18-16 22-10-4-16-12-16-22 0-10 6-18 16-26Z" fill="#fff"/>
+  <text x="64" y="108" text-anchor="middle" font-size="24" font-family="sans-serif" fill="#fff">ABJ</text>
+</svg>

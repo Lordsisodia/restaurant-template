@@ -1,0 +1,20 @@
+{
+  "project_ref": "ntrklmkzyfnrtfbpdypd",
+  "rest_url": "https://ntrklmkzyfnrtfbpdypd.supabase.co/rest/v1",
+  "realtime_url": "wss://ntrklmkzyfnrtfbpdypd.supabase.co/realtime/v1",
+  "auth_url": "https://ntrklmkzyfnrtfbpdypd.supabase.co/auth/v1",
+  "storage_url": "https://ntrklmkzyfnrtfbpdypd.supabase.co/storage/v1",
+  "graphql_url": "https://ntrklmkzyfnrtfbpdypd.supabase.co/graphql/v1",
+  "functions_url": "https://ntrklmkzyfnrtfbpdypd.supabase.co/functions/v1",
+  "studio_url": "https://ntrklmkzyfnrtfbpdypd.supabase.co",
+  "project": {
+    "ref": "ntrklmkzyfnrtfbpdypd",
+    "name": "restaurant-template",
+    "organization_id": "placeholder"
+  },
+  "services": {
+    "api": {
+      "endpoint": "https://ntrklmkzyfnrtfbpdypd.supabase.co/rest/v1"
+    }
+  }
+}

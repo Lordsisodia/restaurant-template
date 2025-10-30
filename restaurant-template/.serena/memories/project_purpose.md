@@ -1,0 +1,1 @@
+For the blog improvements task: primary objective is to improve /blog landing visual to match marketing hero (AnimatedText underline + pill), wire server fetching from Supabase (Fall back to one test article), and lay groundwork for SEO (generateMetadata). Secondary: wire /blog/[slug] server fetching and early suggested stories section.

@@ -1,0 +1,1 @@
+-- Placeholder migration to align with existing remote history (no-op)

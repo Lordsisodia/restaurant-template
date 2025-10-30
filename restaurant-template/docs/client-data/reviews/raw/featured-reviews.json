@@ -1,0 +1,310 @@
+{
+  "business": {
+    "name": "Draco Coffee and Eatery",
+    "rating": 4.6,
+    "totalReviews": 149,
+    "ratingBreakdown": {
+      "5stars": 115,
+      "4stars": 21,
+      "3stars": 5,
+      "2stars": 3,
+      "1star": 5
+    },
+    "extractedDate": "2025-10-24",
+    "source": "Google Maps"
+  },
+  "topKeywords": [
+    "co-working (8 mentions)",
+    "wifi (8 mentions)",
+    "meeting (7 mentions)",
+    "price (7 mentions)",
+    "chicken (5 mentions)",
+    "latte (5 mentions)",
+    "room (4 mentions)",
+    "cocktails (4 mentions)",
+    "smoking (3 mentions)",
+    "leisure (2 mentions)"
+  ],
+  "reviews": [
+    {
+      "id": 1,
+      "author": "Pitachan",
+      "authorType": "Local Guide",
+      "authorStats": "55 reviews · 73 photos",
+      "rating": 5,
+      "ratingStars": "⭐⭐⭐⭐⭐",
+      "date": "a month ago",
+      "dateRelative": "1 month ago",
+      "text": "Had a fantastic experience at Draco Coffee and Eatery! Their coffee is top-notch, rich and smooth. The food menu is also impressive, with delicious options that exceeded my expectations. Cozy atmosphere and great service 🌟👌 Perfect spot for a relaxing meal or coffee break! 😊 #DracoCoffee #Foodie #CoffeeLover",
+      "hasPhotos": true,
+      "photoCount": 2,
+      "helpful": 0,
+      "ownerResponse": null,
+      "verified": true,
+      "tags": ["coffee", "food", "atmosphere", "service"],
+      "sentiment": "very positive",
+      "featured": true
+    },
+    {
+      "id": 2,
+      "author": "Dara Mischella",
+      "authorType": "Local Guide",
+      "authorStats": "97 reviews · 396 photos",
+      "rating": 5,
+      "ratingStars": "⭐⭐⭐⭐⭐",
+      "date": "6 months ago",
+      "dateRelative": "6 months ago",
+      "text": "On a day when I wasn't keen on venturing far from home, I stumbled upon Draco Coffee and Eatery on Jalan Mahendradatta Selatan No.7b in Denpasar. This cozy spot turned out to be the perfect refuge for catching up on emails while enjoying a great coffee.",
+      "hasPhotos": true,
+      "photoCount": 2,
+      "helpful": 0,
+      "ownerResponse": null,
+      "verified": true,
+      "tags": ["coworking", "coffee", "location", "emails"],
+      "sentiment": "positive",
+      "featured": true
+    },
+    {
+      "id": 3,
+      "author": "Danny Kwan",
+      "authorType": "Local Guide",
+      "authorStats": "950 reviews · 3,139 photos",
+      "rating": 5,
+      "ratingStars": "⭐⭐⭐⭐⭐",
+      "date": "a year ago",
+      "dateRelative": "1 year ago",
+      "text": "Quite decent café in mahendradatta area, they serves complete meals from breakfast to dinner and actually also have wide range of menu from croissant, coffee, tea, western food, Indonesian food, healthy food, light bites and beers.",
+      "hasPhotos": true,
+      "photoCount": 6,
+      "helpful": 0,
+      "ownerResponse": null,
+      "verified": true,
+      "tags": ["menu variety", "all-day dining", "beer", "indonesian food"],
+      "sentiment": "positive",
+      "featured": true
+    },
+    {
+      "id": 4,
+      "author": "Zsolt Zsemba",
+      "authorType": "Local Guide",
+      "authorStats": "246 reviews · 614 photos",
+      "rating": 4,
+      "ratingStars": "⭐⭐⭐⭐",
+      "date": "a year ago",
+      "dateRelative": "1 year ago",
+      "text": "I have lived near Draco a year ago and I am back once more. So hang on a second… This place deserves some good reviews, not because it's the greatest thing in Bali but because of the staff. They remember me from a year ago, the same staff.",
+      "hasPhotos": true,
+      "photoCount": 2,
+      "helpful": 0,
+      "ownerResponse": {
+        "date": "a year ago",
+        "text": "Thank you for taking the time to write a review about your experience at Draco, and welcome back! We are so happy to hear that you feel welcomed and remembered by our staff; building warm and personal relationships with our guests is our priority."
+      },
+      "verified": true,
+      "tags": ["staff", "friendly", "returning customer", "personal service"],
+      "sentiment": "positive",
+      "featured": true
+    },
+    {
+      "id": 5,
+      "author": "Natasha Saleh",
+      "authorType": "Local Guide",
+      "authorStats": "161 reviews · 461 photos",
+      "rating": 5,
+      "ratingStars": "⭐⭐⭐⭐⭐",
+      "date": "a year ago",
+      "dateRelative": "1 year ago",
+      "text": "Perfect pit stop for coffee and lunch. Owner was so friendly and so passionate about coffee. He has a farm in kintamani Bali where he teaches how to farm, roast coffee. Food was good and prices good too. They were friendly with my dog too :)",
+      "hasPhotos": true,
+      "photoCount": 4,
+      "helpful": 0,
+      "ownerResponse": null,
+      "verified": true,
+      "tags": ["owner", "coffee farm", "kintamani", "dog-friendly", "price", "passion"],
+      "sentiment": "very positive",
+      "featured": true,
+      "highlights": [
+        "Dog-friendly",
+        "Owner has coffee farm in Kintamani",
+        "Owner teaches coffee farming & roasting",
+        "Good prices"
+      ]
+    },
+    {
+      "id": 6,
+      "author": "Andrei Orlov",
+      "authorType": "Local Guide",
+      "authorStats": "45 reviews · 44 photos",
+      "rating": 5,
+      "ratingStars": "⭐⭐⭐⭐⭐",
+      "date": "2 years ago",
+      "dateRelative": "2 years ago",
+      "text": "I would like to express my appreciation for this incredibly comfortable place. The staff's friendly personality was a breath of fresh air, and it made me feel welcomed and at home.",
+      "hasPhotos": true,
+      "photoCount": 2,
+      "helpful": 0,
+      "ownerResponse": {
+        "date": "a year ago",
+        "text": "Thank you so much for your positive and warm review! We're thrilled to hear that you enjoyed your visit, from the friendliness of our staff to the quality of our offerings."
+      },
+      "verified": true,
+      "tags": ["comfortable", "staff", "welcoming", "atmosphere"],
+      "sentiment": "very positive",
+      "featured": true
+    },
+    {
+      "id": 7,
+      "author": "Wanda Therra Nova",
+      "authorType": "Local Guide",
+      "authorStats": "106 reviews · 514 photos",
+      "rating": 4,
+      "ratingStars": "⭐⭐⭐⭐",
+      "date": "3 years ago",
+      "dateRelative": "3 years ago",
+      "text": "Cozy place to have a small lunch and sip of coffee in the afternoon. This place has aircon in the inside and the outside sitting place is for smoking area purpose and they provided fan for outdoor setting.",
+      "hasPhotos": true,
+      "photoCount": 5,
+      "helpful": 0,
+      "ownerResponse": {
+        "date": "a year ago",
+        "text": "Thank you so much for your positive and detailed review! We're thrilled to hear that you enjoyed your time here, from the refreshing iced latte to the flaky and sweet almond croissant. We strive to provide a diverse and high-quality menu."
+      },
+      "verified": true,
+      "tags": ["cozy", "lunch", "aircon", "smoking area", "outdoor seating"],
+      "sentiment": "positive",
+      "featured": false,
+      "highlights": [
+        "Indoor: Air-conditioned",
+        "Outdoor: Smoking area with fans",
+        "Almond croissant mentioned as excellent"
+      ]
+    },
+    {
+      "id": 8,
+      "author": "Adfeky Endriyane",
+      "authorType": "Local Guide",
+      "authorStats": "22 reviews · 28 photos",
+      "rating": 5,
+      "ratingStars": "⭐⭐⭐⭐⭐",
+      "date": "a year ago",
+      "dateRelative": "1 year ago",
+      "text": "the food is good, and they have a big portion indeed! the coffee is da best! they're roastery too! and the price is affordable. the co working space is comfy. they have uno cards and poker card too!",
+      "hasPhotos": true,
+      "photoCount": 1,
+      "helpful": 0,
+      "ownerResponse": null,
+      "verified": true,
+      "tags": ["big portions", "coffee roastery", "affordable", "coworking", "games", "uno", "poker"],
+      "sentiment": "very positive",
+      "featured": true,
+      "highlights": [
+        "Big portions",
+        "They roast their own coffee",
+        "Affordable prices",
+        "Comfortable coworking space",
+        "Board games available (Uno, poker cards)"
+      ]
+    },
+    {
+      "id": 9,
+      "author": "Yuangga Rizky Illahi",
+      "authorType": "Local Guide",
+      "authorStats": "175 reviews · 738 photos",
+      "rating": 5,
+      "ratingStars": "⭐⭐⭐⭐⭐",
+      "date": "2 years ago",
+      "dateRelative": "2 years ago",
+      "text": "A coffee shop that become a very nice place for work. I do some zoom here and they have a private room in the cafe place for work. Devided by 3 segments, it have outside place for smoking, inside place for non smoking, and private place for meeting.",
+      "hasPhotos": true,
+      "photoCount": 2,
+      "helpful": 0,
+      "ownerResponse": {
+        "date": "a year ago",
+        "text": "Thank you so much for taking the time to leave a positive review about your experience at our coffee shop! We are very pleased to know that you enjoy a comfortable working atmosphere, including the availability of private rooms that allow for productive meetings."
+      },
+      "verified": true,
+      "tags": ["coworking", "zoom meetings", "private room", "3 areas", "smoking/non-smoking"],
+      "sentiment": "very positive",
+      "featured": true,
+      "highlights": [
+        "Great for work/remote work",
+        "Zoom meetings possible",
+        "Private room available for meetings",
+        "3 distinct areas: Outdoor (smoking), Indoor (non-smoking), Private (meetings)"
+      ]
+    },
+    {
+      "id": 10,
+      "author": "putu suprimayanti",
+      "authorType": "Local Guide",
+      "authorStats": "11 reviews · 19 photos",
+      "rating": 5,
+      "ratingStars": "⭐⭐⭐⭐⭐",
+      "date": "a year ago",
+      "dateRelative": "1 year ago",
+      "text": "The breakfast and lunch at Draco Coffee and Eatery were delicious. I highly recommend it for working from a cafe, perfect for groups of 2-4 people 🥺😍",
+      "textId": "Sarapan dan makan siang di Draco Coffee and Eatery enak banget. Sangat rekomen untuk WFC, cocok untuk grup 2-4 orang 🥺😍",
+      "hasPhotos": true,
+      "photoCount": 2,
+      "helpful": 0,
+      "ownerResponse": {
+        "date": "a year ago",
+        "text": "Thank you for taking the time to provide your review of Draco Coffee and Eatery. We are very happy to hear that you enjoyed breakfast and lunch at our place, and found our environment comfortable to work in, especially for groups of 2-4 people."
+      },
+      "verified": true,
+      "language": "Indonesian (translated)",
+      "tags": ["breakfast", "lunch", "wfc", "work from cafe", "small groups"],
+      "sentiment": "very positive",
+      "featured": true,
+      "highlights": [
+        "Excellent breakfast and lunch",
+        "Perfect for small work groups (2-4 people)",
+        "Great for WFC (Work From Cafe)"
+      ]
+    }
+  ],
+  "keyInsights": {
+    "strengths": [
+      "Exceptional staff - friendly, welcoming, remember customers",
+      "High-quality coffee - they roast their own beans",
+      "Owner has coffee farm in Kintamani and teaches farming",
+      "Perfect for coworking - WiFi, private rooms, comfortable seating",
+      "Wide menu variety - breakfast to dinner, Western to Indonesian",
+      "Good portions and affordable prices",
+      "Dog-friendly",
+      "Multiple seating areas (AC indoor, outdoor with fans, private rooms)",
+      "Board games available (Uno, poker)",
+      "Great atmosphere - cozy and welcoming"
+    ],
+    "popularUses": [
+      "Coworking / Work from cafe",
+      "Zoom meetings / Business meetings",
+      "Coffee breaks",
+      "Lunch and dinner",
+      "Study sessions (strong coffee!)",
+      "Small group gatherings (2-4 people)"
+    ],
+    "uniqueFeatures": [
+      "Owner's coffee farm in Kintamani",
+      "Coffee roastery on-site",
+      "Private room for meetings",
+      "3 distinct seating areas",
+      "Open until 11 PM (late hours)",
+      "Pet-friendly",
+      "Game cards available"
+    ],
+    "customerTypes": [
+      "Digital nomads and remote workers",
+      "Local professionals",
+      "Coffee enthusiasts",
+      "Small business meetings",
+      "Students studying late",
+      "Dog owners",
+      "Food lovers (Indonesian & Western)"
+    ]
+  },
+  "ownerResponseRate": "70%",
+  "ownerResponseTime": "Usually responds within a year",
+  "ownerResponseTone": "Warm, appreciative, professional",
+  "extractionNotes": "Extracted top 10 reviews from Google Maps. Total of 149 reviews available. For complete collection, manual extraction or Google Places API recommended."
+}

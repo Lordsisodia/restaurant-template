@@ -38,5 +38,3 @@ next-env.d.ts
 # secrets
 .google-oauth-credentials.txt
 
-restaurant-template/
-siso-app-factory/

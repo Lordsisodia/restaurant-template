@@ -1,0 +1,50 @@
+# Restaurant-specific Codex configuration
+# This overrides global MCPs for this project only
+
+model = "gpt-5"
+model_provider = "openai"
+approval_policy = "never"
+sandbox_mode = "workspace-write"
+model_reasoning_effort = "high"
+model_reasoning_summary = "detailed"
+model_verbosity = "high"
+model_max_output_tokens = 16384
+hide_agent_reasoning = false
+
+[tools]
+web_search = true
+
+# Only enable restaurant-relevant MCPs
+[mcp_servers.restaurant-supabase]
+command = "npx"
+args = ["-y", "@supabase/mcp-server-supabase@latest", "--project-ref=ntrklmkzyfnrtfbpdypd"]
+startup_timeout_ms = 120000
+
+[mcp_servers.restaurant-supabase.env]
+SUPABASE_ACCESS_TOKEN = "sbp_8aacd85cdcdbd1f8193bbf824b795d8242e8f893"
+
+[mcp_servers.serena]
+command = "uvx"
+args = ["--from", "git+https://github.com/oraios/serena", "serena-mcp-server"]
+startup_timeout_ms = 120000
+
+[mcp_servers.clear-thought]
+command = "npx"
+args = ["-y", "@smithery/cli@latest", "run", "@waldzellai/clear-thought", "--key", "9ba2cfc1-75f7-48a9-aa95-84abc729a9fd", "--profile", "useful-gecko-Xd5Cup"]
+startup_timeout_ms = 180000
+
+[mcp_servers.fetch]
+command = "npx"
+args = ["-y", "@modelcontextprotocol/server-fetch"]
+
+[mcp_servers.filesystem]
+command = "npx"
+args = ["-y", "@modelcontextprotocol/server-filesystem", "/Users/shaansisodia"]
+
+[mcp_servers.context7]
+command = "npx"
+args = ["-y", "@upstash/context7-mcp"]
+
+# Explicitly disable siso-internal-supabase for restaurant project
+[mcp_servers.siso-internal-supabase]
+enabled = false

@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Images Catalog</title>
+  <style>
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif; margin: 16px; }
+    header { display:flex; gap:12px; align-items:center; flex-wrap:wrap; }
+    .grid { display:grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 14px; margin-top: 16px; }
+    .card { border: 1px solid #ddd; border-radius: 8px; overflow:hidden; background:#fff; display:flex; flex-direction:column; }
+    .thumb { aspect-ratio: 4/3; object-fit: cover; width: 100%; background:#f6f6f6; }
+    .meta { padding: 8px 10px; font-size: 12px; color:#333; }
+    .meta b { font-weight: 600; }
+    .badge { display:inline-block; padding:2px 6px; border-radius: 999px; background:#f1f1f1; margin-right:6px; }
+    .controls { display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
+    .footer { margin-top:20px; font-size:12px; color:#555; }
+    input[type="search"], select { padding:6px 8px; font-size:14px; }
+    button { padding:8px 12px; font-size:14px; cursor:pointer; }
+    .sticky { position: sticky; top: 0; background: #fff; padding: 8px 0; z-index: 1; border-bottom: 1px solid #eee; }
+  </style>
+  <script>
+    let DATA = [];
+    async function init() {
+      const res = await fetch('catalog.json?_=' + Date.now());
+      DATA = await res.json();
+      renderCards(DATA);
+      populateFilters(DATA);
+    }
+    function populateFilters(rows){
+      const cats = Array.from(new Set(rows.map(r => r.suggestedCategory))).sort();
+      const sel = document.getElementById('filter-category');
+      sel.innerHTML = '<option value="">All categories</option>' + cats.map(function(c){ return '<option>' + c + '</option>'; }).join('');
+    }
+    function matches(r, q, cat) {
+      if (cat && r.suggestedCategory !== cat) return false;
+      if (!q) return true;
+      q = q.toLowerCase();
+      return r.file.toLowerCase().includes(q) || r.path.toLowerCase().includes(q);
+    }
+    function renderCards(rows) {
+      const q = document.getElementById('search').value.trim();
+      const cat = document.getElementById('filter-category').value;
+      const grid = document.getElementById('grid');
+      grid.innerHTML = rows.filter(function(r){ return matches(r,q,cat); }).map(function(r){
+        return (
+          '<div class="card" data-path="' + r.path + '">' +
+          '  <img class="thumb" src="' + thumbPath(r.path) + '" alt="' + r.file.replace(/"/g,'&quot;') + '" loading="lazy" onerror="this.style.display='none'" />' +
+          '  <div class="meta">' +
+          '    <div><b>' + r.file + '</b></div>' +
+          '    <div>' + (r.width || '?') + '×' + (r.height || '?') + ' • ' + r.orientation + ' • ' + (r.size || '') + '</div>' +
+          '    <div>cat: <span class="badge">' + r.suggestedCategory + '</span></div>' +
+          '    <div>placements: ' + (r.placementSuggestions||[]).map(function(p){ return '<span class="badge">' + p + '</span>'; }).join('') + '</div>' +
+          '    <div style="margin-top:6px;">' +
+          '      <label>Update category: <select onchange="updateCat('' + r.path.replace(/'/g,"\'") + '', this.value)">' +
+          catOptions(r.suggestedCategory) +
+          '      </select></label>' +
+          '    </div>' +
+          '  </div>' +
+          '</div>'
+        );
+      }).join('');
+    }
+    function thumbPath(p){
+      // Use the original image path relative to this HTML file
+      const levelsUp = (location.pathname.split('/').length - 2) - (p.split('/').length - 1);
+      // If catalog lives in Images/_catalog and p starts with Images/, strip prefix
+      return p.startsWith('Images/') ? '../' + p.slice('Images/'.length) : p;
+    }
+    const CATEGORIES = [
+      'interior','exterior','food-drink','menu-screenshot','map-screenshot','logo/branding','signage-hours','people/staff','uncertain'
+    ];
+    function catOptions(current){
+      return CATEGORIES.map(function(c){ return '<option value="' + c + '" ' + (c===current?'selected':'') + '>' + c + '</option>'; }).join('');
+    }
+    function updateCat(p, c){
+      const it = DATA.find(r => r.path === p);
+      if (it) { it.suggestedCategory = c; it._edited = true; }
+    }
+    function exportJSON(){
+      const blob = new Blob([JSON.stringify(DATA, null, 2)], {type:'application/json'});
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'catalog.edited.json';
+      a.click();
+      URL.revokeObjectURL(a.href);
+    }
+    function onFilterChange(){ renderCards(DATA); }
+    window.addEventListener('DOMContentLoaded', init);
+  </script>
+  </head>
+  <body>
+    <header class="sticky">
+      <div class="controls">
+        <input id="search" type="search" placeholder="Search filename/path" oninput="onFilterChange()" />
+        <select id="filter-category" onchange="onFilterChange()"></select>
+        <button onclick="exportJSON()">Export JSON</button>
+      </div>
+    </header>
+    <div id="grid" class="grid"></div>
+    <div class="footer">Open this file locally in a browser. Use the per-card dropdown to adjust categories, then click Export JSON to save your edits.</div>
+  </body>
+</html>

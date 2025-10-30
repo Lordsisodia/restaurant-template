@@ -1,0 +1,15 @@
+project_id = "restaurant-template-local"
+
+[api]
+port = 55421
+schemas = ["public", "storage"]
+extra_search_path = ["extensions"]
+max_rows = 1000
+
+[db]
+port = 55422
+major_version = 17
+
+[studio]
+port = 55423
+

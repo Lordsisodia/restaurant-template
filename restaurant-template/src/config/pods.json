@@ -1,0 +1,178 @@
+{
+  "pods": [
+    {
+      "id": "pod-alpha",
+      "label": "Bali Core Pod",
+      "description": "Production Supabase cluster for Draco Coffee and Eatery and future Bali restaurant tenants.",
+      "maxTenants": 10,
+      "supabase": {
+        "projectRef": "ntrklmkzyfnrtfbpdypd",
+        "region": "ap-southeast-1",
+        "urlEnv": "SUPABASE_URL_POD_ALPHA",
+        "anonKeyEnv": "SUPABASE_ANON_KEY_POD_ALPHA",
+        "serviceRoleKeyEnv": "SUPABASE_SERVICE_ROLE_KEY_POD_ALPHA",
+        "databasePasswordEnv": "SUPABASE_DB_PASSWORD_POD_ALPHA"
+      },
+      "clerk": {
+        "publishableKeyEnv": "NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY",
+        "secretKeyEnv": "CLERK_SECRET_KEY"
+      },
+      "vercel": {
+        "projectNamePrefix": "restaurant-",
+        "envGroup": "restaurants-pod-alpha"
+      },
+      "tenants": [
+        {
+          "restaurantId": "00000000-0000-0000-0000-000000000003",
+          "slug": "draco-coffee",
+          "displayName": "Draco Coffee and Eatery",
+          "domains": [
+            "dracocoffee.com",
+            "www.dracocoffee.com",
+            "draco.localhost",
+            "draco.siso.agency"
+          ],
+          "locales": {
+            "default": "id-ID",
+            "available": ["id-ID", "en-US"]
+          },
+          "status": "active",
+          "notes": "Real client - Draco Coffee and Eatery, Denpasar, Bali",
+          "siteConfig": {
+            "enabled_pages": [
+              "home",
+              "menu",
+              "reviews",
+              "blog",
+              "about",
+              "contact",
+              "chat",
+              "loyalty"
+            ],
+            "features": {
+              "onlineOrdering": true,
+              "reservations": false,
+              "topNavVariant": "segments",
+              "brand": {
+                "logoUrl": "/images/tenants/draco/brand/logo/draco-logo.svg",
+                "showTextWithLogo": true,
+                "titleAfterLogo": "Coffee and Eatery",
+                "tagline": "Where Strong Coffee Meets Authentic Flavor",
+                "heroUrl": "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=1920&q=80",
+                "backgroundColor": "#000000",
+                "textColor": "#FFFFFF",
+                "accentColor": "#D4AF37"
+              },
+              "contact": {
+                "phone": "0813-3840-9090",
+                "phoneFormatted": "+62 813-3840-9090",
+                "whatsapp": "+62 819-9977-7138",
+                "whatsappFormatted": "+62 819 9977 7138",
+                "email": "",
+                "hours": "Open until 11:00 PM",
+                "address": "Jl. Mahendradatta Selatan No.7b, Pemecutan Klod, Denpasar, Bali 80119"
+              },
+              "delivery": {
+                "partners": ["GoFood", "GrabFood"],
+                "directPhone": "+62 819 9977 7138",
+                "taxNote": "All prices exclude 5% tax"
+              },
+              "socialMedia": {
+                "instagram": "https://instagram.com/draco.cofeeandeatery",
+                "instagramHandle": "@draco.cofeeandeatery",
+                "facebook": "",
+                "googleMaps": ""
+              },
+              "rating": {
+                "score": 4.6,
+                "reviews": 149,
+                "source": "Google"
+              },
+              "hero": {
+                "variant": "gradient-words",
+                "words": ["Awake.", "Alive.", "Until 11 PM."],
+                "images": [
+                  "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=1920&q=80",
+                  "https://images.unsplash.com/photo-1577219491135-ce391730fb2c?w=1920&q=80",
+                  "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=1920&q=80",
+                  "https://images.unsplash.com/photo-1556910103-1c02745aae4d?w=1920&q=80",
+                  "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=1920&q=80"
+                ]
+              },
+              "menu": {
+                "categories": 17,
+                "totalItems": 80,
+                "popular": [
+                  "Nasi Bakar Ayam",
+                  "Nasi Bakar Cumi",
+                  "Chicken Sambal Matah",
+                  "Specialty Coffee",
+                  "Espresso Martini"
+                ]
+              }
+            },
+            "default_locale": "id-ID",
+            "available_locales": ["id-ID", "en-US"],
+            "layout_variant": "coffee-forward",
+            "theme_tokens": {
+              "color": {
+                "primary": "#000000",
+                "primaryForeground": "#FFFFFF",
+                "background": "#000000",
+                "foreground": "#FFFFFF",
+                "muted": "#1F1F1F",
+                "mutedForeground": "#A3A3A3",
+                "border": "#404040",
+                "input": "#2D2D2D",
+                "accent": "#D4AF37",
+                "accentForeground": "#000000",
+                "card": "#1F1F1F",
+                "cardForeground": "#FFFFFF"
+              },
+              "borderRadius": {
+                "lg": "0.75rem",
+                "md": "0.5rem",
+                "sm": "0.25rem"
+              }
+            }
+          }
+        },
+        {
+          "restaurantId": "00000000-0000-0000-0000-00000000000A",
+          "slug": "reserved-slot-01",
+          "displayName": "Reserved Client Slot 01",
+          "domains": ["reserved-slot-01.siso.agency"],
+          "locales": {
+            "default": "id-ID",
+            "available": ["id-ID"]
+          },
+          "status": "reserved",
+          "notes": "Keep warm slot for upcoming onboarding"
+        }
+      ]
+    }
+    ,
+    {
+      "id": "restaurant-supabase",
+      "label": "Restaurant Supabase Pod",
+      "description": "Primary Supabase project for the Restaurant template (custom env group).",
+      "maxTenants": 25,
+      "supabase": {
+        "projectRef": "<set-in-env>",
+        "region": "<set-in-env>",
+        "urlEnv": "SUPABASE_URL_RESTAURANT_SUPABASE",
+        "anonKeyEnv": "SUPABASE_ANON_KEY_RESTAURANT_SUPABASE",
+        "serviceRoleKeyEnv": "SUPABASE_SERVICE_ROLE_KEY_RESTAURANT_SUPABASE"
+      },
+      "clerk": {
+        "publishableKeyEnv": "NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY",
+        "secretKeyEnv": "CLERK_SECRET_KEY"
+      },
+      "vercel": {
+        "projectNamePrefix": "restaurant-",
+        "envGroup": "restaurants-restaurant-supabase"
+      },
+      "tenants": []
+    }
+  ]
+}
