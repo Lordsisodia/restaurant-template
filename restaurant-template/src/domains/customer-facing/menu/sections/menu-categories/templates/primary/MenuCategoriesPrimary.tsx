@@ -19,31 +19,8 @@ import {
 } from '@/domains/customer-facing/menu/sections/menu-item-detail';
 import type { MenuCategoriesContent } from '../../types';
 import { AnimatedText, SectionHeading } from '@/domains/shared/components';
-
-const GROUP_DEFINITIONS = [
-  { key: 'breakfast', label: 'Breakfast', patterns: [/breakfast/i, /brunch/i, /morning/i] },
-  { key: 'starters', label: 'Starters', patterns: [/starter/i, /appet/i, /snack/i, /small plate/i, /bite/i] },
-  { key: 'mains', label: 'Main Meals', patterns: [/main/i, /entree/i, /pasta/i, /pizza/i, /burger/i, /rice/i, /nasi/i, /noodle/i, /grill/i, /steak/i] },
-  { key: 'sides', label: 'Sides', patterns: [/side/i, /salad/i, /soup/i, /fries/i, /share/i, /snack/i] },
-  { key: 'dessert', label: 'Dessert', patterns: [/dessert/i, /sweet/i, /cake/i, /pastry/i, /bake/i, /ice cream/i] },
-  { key: 'coffee', label: 'Coffee & Tea', patterns: [/coffee/i, /espresso/i, /latte/i, /cappuccino/i, /tea/i, /matcha/i] },
-  { key: 'juices', label: 'Juices & Soft Drinks', patterns: [/juice/i, /smoothie/i, /shake/i, /soda/i, /mocktail/i, /lemonade/i, /cold brew/i] },
-  { key: 'alcohol', label: 'Alcoholic Drinks', patterns: [/alcohol/i, /cocktail/i, /wine/i, /beer/i, /spirit/i, /liquor/i] },
-];
-
-const DEFAULT_GROUP = { key: 'other', label: 'More to Explore' } as const;
-
-function resolveGroupForCategory(name: string) {
-  const match = GROUP_DEFINITIONS.find((definition) =>
-    definition.patterns.some((pattern) => pattern.test(name))
-  );
-
-  if (match) {
-    return match;
-  }
-
-  return DEFAULT_GROUP;
-}
+import { groupMenuSections } from '@/domains/customer-facing/menu/shared/utils/menu-grouping';
+import { useRouter } from 'next/navigation';
 
 export default function MenuCategoriesPrimary({
   categories = [],
@@ -151,45 +128,10 @@ export default function MenuCategoriesPrimary({
   };
 
   const closeDetail = () => setSelectedItem(null);
-  const groupedSections = useMemo(() => {
-    type GroupAccumulator = {
-      key: string;
-      label: string;
-      categories: MenuCategory[];
-      items: MenuItem[];
-    };
-
-    const accumulators = new Map<string, GroupAccumulator>();
-
-    sortedCategories.forEach((category) => {
-      const categoryItems = itemsByCategory[category.id] ?? [];
-
-      if (categoryItems.length === 0) {
-        return;
-      }
-
-      const groupDefinition = resolveGroupForCategory(category.name ?? '');
-
-      if (!accumulators.has(groupDefinition.key)) {
-        accumulators.set(groupDefinition.key, {
-          key: groupDefinition.key,
-          label: groupDefinition.label,
-          categories: [],
-          items: [],
-        });
-      }
-
-      const entry = accumulators.get(groupDefinition.key)!;
-      entry.categories.push(category);
-      entry.items.push(...categoryItems);
-    });
-
-    const orderedKeys = [...GROUP_DEFINITIONS.map((definition) => definition.key), DEFAULT_GROUP.key];
-
-    return orderedKeys
-      .map((key) => accumulators.get(key))
-      .filter((value): value is GroupAccumulator => Boolean(value));
-  }, [itemsByCategory, sortedCategories]);
+  const groupedSections = useMemo(
+    () => groupMenuSections(sortedCategories, itemsByCategory),
+    [itemsByCategory, sortedCategories],
+  );
 
   const CategoryPill = ({ label, count }: { label: string; count: number }) => {
     const shellClass = cn('relative flex h-1 w-1 items-center justify-center rounded-full bg-white/35');
@@ -213,16 +155,14 @@ export default function MenuCategoriesPrimary({
     );
   };
 
-  const categoriesWithItems = useMemo(() => {
-    return sortedCategories.filter((category) => (itemsByCategory[category.id] ?? []).length > 0);
-  }, [itemsByCategory, sortedCategories]);
+  const router = useRouter();
 
-  const [activeCategoryId, setActiveCategoryId] = useState<string | null>(null);
+  const [activeGroupKey, setActiveGroupKey] = useState<string | null>(null);
   const [selectorOpen, setSelectorOpen] = useState(false);
   const selectorRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
-    if (categoriesWithItems.length === 0) {
+    if (groupedSections.length === 0) {
       return;
     }
 
@@ -241,8 +181,8 @@ export default function MenuCategoriesPrimary({
         });
 
         if (maxEntry) {
-          const id = maxEntry.target.getAttribute('data-category-id');
-          setActiveCategoryId(id && id.length > 0 ? id : null);
+          const key = maxEntry.target.getAttribute('data-group-key');
+          setActiveGroupKey(key && key.length > 0 ? key : null);
         }
       },
       {
@@ -251,20 +191,15 @@ export default function MenuCategoriesPrimary({
       },
     );
 
-    const sentinel = document.getElementById('menu-category-top-sentinel');
-    if (sentinel) {
-      observer.observe(sentinel);
-    }
-
-    categoriesWithItems.forEach((category) => {
-      const el = document.getElementById(`menu-category-${category.id}`);
+    groupedSections.forEach((section) => {
+      const el = document.getElementById(`menu-group-${section.slug}`);
       if (el) {
         observer.observe(el);
       }
     });
 
     return () => observer.disconnect();
-  }, [categoriesWithItems]);
+  }, [groupedSections]);
 
   useEffect(() => {
     if (!selectorOpen) {
@@ -285,18 +220,9 @@ export default function MenuCategoriesPrimary({
     return () => window.removeEventListener('mousedown', handleClick);
   }, [selectorOpen]);
 
-  const scrollToCategory = (categoryId: string | null) => {
-    if (categoryId === null) {
-      const topEl = document.getElementById('menu-category-top');
-      topEl?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      setActiveCategoryId(null);
-      setSelectorOpen(false);
-      return;
-    }
-
-    const target = document.getElementById(`menu-category-${categoryId}`);
-    target?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    setActiveCategoryId(categoryId);
+  const navigateToGroup = (slug: string | null) => {
+    const href = slug ? `/menu/categories?group=${slug}` : '/menu/categories';
+    router.push(href);
     setSelectorOpen(false);
   };
 
@@ -309,13 +235,12 @@ export default function MenuCategoriesPrimary({
     );
 
   const totalItems = menuItems.length;
-  const selectedCategoryName = activeCategoryId
-    ? categoriesWithItems.find((category) => category.id === activeCategoryId)?.name ?? 'Category'
-    : 'All Items';
+  const selectedGroupLabel = activeGroupKey
+    ? groupedSections.find((section) => section.key === activeGroupKey)?.label ?? 'Menu Categories'
+    : 'All Sections';
 
   return (
     <div className="space-y-16" id="menu-category-top">
-      <div id="menu-category-top-sentinel" data-category-id="" className="h-px w-px" />
       <header className="flex justify-center">
         <SectionHeading
           pillText="Our Menu"
@@ -327,7 +252,7 @@ export default function MenuCategoriesPrimary({
         />
       </header>
 
-      {categoriesWithItems.length > 0 ? (
+      {groupedSections.length > 0 ? (
         <div className="relative mx-auto w-full max-w-5xl" ref={selectorRef}>
           <button
             type="button"
@@ -337,8 +262,8 @@ export default function MenuCategoriesPrimary({
             <div className="text-left">
               <p className="text-xs font-semibold uppercase tracking-[0.28em] text-white/60">Categories</p>
               <p className="mt-1 text-lg font-semibold">
-                {selectedCategoryName}
-                {activeCategoryId ? null : ` • ${totalItems} items`}
+                {selectedGroupLabel}
+                {activeGroupKey ? null : ` • ${totalItems} items`}
               </p>
             </div>
             <motion.span animate={{ rotate: selectorOpen ? 180 : 0 }} transition={{ duration: 0.25 }}>
@@ -360,25 +285,25 @@ export default function MenuCategoriesPrimary({
                 <div className="grid gap-3 sm:grid-cols-2">
                   <button
                     type="button"
-                    className={navButtonClass(activeCategoryId === null)}
-                    onClick={() => scrollToCategory(null)}
+                    className={navButtonClass(activeGroupKey === null)}
+                    onClick={() => navigateToGroup(null)}
                   >
                     <span className="flex flex-col">
                       <span className="text-base font-semibold">All Items</span>
                       <span className="text-sm text-white/60">{totalItems} total</span>
                     </span>
                   </button>
-                  {categoriesWithItems.map((category) => {
-                    const count = itemsByCategory[category.id]?.length ?? 0;
+                  {groupedSections.map((section) => {
+                    const count = section.items.length;
                     return (
                       <button
-                        key={category.id}
+                        key={section.key}
                         type="button"
-                        className={navButtonClass(activeCategoryId === category.id)}
-                        onClick={() => scrollToCategory(category.id)}
+                        className={navButtonClass(activeGroupKey === section.key)}
+                        onClick={() => navigateToGroup(section.slug)}
                       >
                         <span className="flex flex-col">
-                          <span className="text-base font-semibold">{category.name ?? 'Category'}</span>
+                          <span className="text-base font-semibold">{section.label}</span>
                           <span className="text-sm text-white/60">{count} {count === 1 ? 'item' : 'items'}</span>
                         </span>
                       </button>
@@ -402,6 +327,8 @@ export default function MenuCategoriesPrimary({
             return (
               <motion.section
                 key={group.key}
+                id={`menu-group-${group.slug}`}
+                data-group-key={group.key}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.3 }}

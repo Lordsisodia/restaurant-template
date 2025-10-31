@@ -20,8 +20,8 @@ export default async function ChatPage() {
   return (
     <>
       <style>{`main + footer { display: none; }`}</style>
-      <div className="relative flex min-h-svh w-full flex-col overflow-hidden bg-muted/30">
-        <div className="flex flex-1 items-stretch justify-center px-4 pb-8 pt-[108px] sm:px-8 sm:pb-10 sm:pt-28 lg:px-12">
+      <div className="relative flex h-svh w-full flex-col overflow-hidden bg-muted/30">
+        <div className="flex flex-1 items-stretch justify-center px-4 sm:px-8 lg:px-12">
           <AiAssistantCard
             userName={tenant.displayName ?? 'there'}
             headline="Let's make your Draco visit perfect."
@@ -34,8 +34,8 @@ export default async function ChatPage() {
             disableMinHeight
             compact
             descriptionClassName="text-xs sm:text-sm"
-            className="flex h-full w-full max-w-4xl flex-col overflow-hidden border border-border/60 bg-background/95 shadow-lg backdrop-blur-sm max-h-[calc(100svh-140px)] p-0 sm:max-h-[calc(100svh-152px)]"
-            contentClassName="flex h-full flex-col overflow-hidden p-0"
+            className="mt-[108px] mb-8 flex h-[calc(100svh-140px)] w-full max-w-4xl flex-col overflow-hidden border border-border/60 bg-background/95 shadow-lg backdrop-blur-sm p-0 sm:mt-28 sm:mb-10 sm:h-[calc(100svh-152px)]"
+            contentClassName="flex h-full min-h-0 flex-col overflow-hidden p-0"
           />
         </div>
       </div>

@@ -6,12 +6,28 @@ export const heroMocks = defineSectionMocks<HeroVariant, HeroContent>('Hero Sect
   defaultVariant: 'primary',
   variants: {
     primary: {
-      title: 'About Us',
-      subtitle: 'Our Story, Our Passion',
+      pillText: 'Our Story',
+      title: 'Savor Bali’s energy, one cup at a time.',
+      subtitle: 'Neighborhood coffee, late-night plates, and a community powered by bold flavor.',
       description:
-        'Since opening our doors, Draco Coffee and Eatery has been serving Bali’s boldest coffee and most authentic flavors.',
+        'Born in Denpasar in 2020, Draco Coffee & Eatery celebrates Indonesian staples, vinyl-laced evenings, and connections that linger long after the last sip.',
       imageUrl: 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=1920&q=90&auto=format&fit=crop',
-      pillText: 'Discover Our Journey',
+      primaryCta: {
+        label: 'Book a Visit',
+        href: '#location',
+        style: 'primary',
+      },
+      secondaryCta: {
+        label: 'Meet the Team',
+        href: '#team',
+        style: 'secondary',
+      },
+      metaBadges: [
+        { id: 'founded', label: 'Since', value: '2020' },
+        { id: 'hours', label: 'Open Until', value: '23:00' },
+        { id: 'rating', label: 'Guest Rating', value: '4.6 ★' },
+        { id: 'experience', label: 'Experience', value: 'Vinyl Nights' },
+      ],
     },
     'template-2': {
       title: 'Where Taste Meets Tradition',

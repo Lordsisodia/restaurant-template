@@ -121,13 +121,8 @@ Note: provided from prior knowledge; we’ll validate and refine together.
 - SingleThread (Healdsburg) — `https://www.singlethreadfarms.com`
 
 ## 11) Next Steps (Ucodex Backlog)
-- Decide primary CTA (Reserve vs Order) → reflect in hero and footer.
-- Top-nav variant confirmed — keep current implementation (primary links plus overflow sheet).
 - Approve hero media (poster image + optional video spec); compress and add to CDN.
-- Confirm sections order and which are optional for MVP (Gallery/Map).
-- Pick Newsletter vs Loyalty capture for the landing card.
-- Provide hours, contact, address, and delivery partners list for Essentials.
-- Define specials cadence and initial set to seed.
+- Confirm hero media (poster image + optional video spec); compress and add to CDN.
 
 ### Acceptance Criteria (MVP)
 - Initial load shows branded background + logo; no black flash.

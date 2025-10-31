@@ -4,6 +4,7 @@ export const CORE_PUBLIC_ROUTES = [
   '/membership',
   '/reviews',
   '/chat',
+  '/promotions',
   '/about',
   '/our-story',
   '/blog',

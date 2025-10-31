@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { convertPlainTextToHtml } from '../templates/primary/PostPrimary';
+import { convertPlainTextToHtml } from '../templates/primary/markdown';
 
 describe('convertPlainTextToHtml', () => {
   it('creates heading hierarchy from markdown syntax', () => {

@@ -32,7 +32,7 @@ export function GuestFeedbackClient({ content }: GuestFeedbackClientProps) {
     <>
       <div className="min-h-screen bg-background">
         <div className="mx-auto max-w-7xl px-6 py-12">
-          <div className="mb-8">
+          <div className="mb-8 mt-24 lg:mt-28">
             <SectionHeading
               title={heading.title}
               subtitle={heading.subtitle}

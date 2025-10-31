@@ -34,6 +34,7 @@ const getIconForItem = (label: string, iconProp?: ReactNode) => {
   if (lowerLabel.includes('review')) return <Star className="h-5 w-5" />;
   if (lowerLabel.includes('contact')) return <Mail className="h-5 w-5" />;
   if (lowerLabel.includes('call')) return <Phone className="h-5 w-5" />;
+  if (lowerLabel.includes('promo')) return <Zap className="h-5 w-5" />;
   if (lowerLabel.includes('amp')) return <Zap className="h-5 w-5" />;
 
   return <Menu className="h-5 w-5" />;

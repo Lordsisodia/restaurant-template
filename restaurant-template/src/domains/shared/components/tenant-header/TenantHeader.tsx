@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState, type ReactNode } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
-import { Menu, Phone, Utensils, Gift, MessageSquare, Star, Info, FileText } from 'lucide-react';
+import { Menu, Phone, Utensils, Gift, MessageSquare, Star, Info, FileText, Zap } from 'lucide-react';
 
 import {
   NavigationMenu,
@@ -28,6 +28,7 @@ const PAGE_LABELS: Record<string, string> = {
   membership: 'Membership',
   reviews: 'Reviews',
   chat: 'Chat',
+  promotions: 'Promotions Bay',
   about: 'About Us',
   blog: 'Blog',
   'our-story': 'Our Story',
@@ -38,6 +39,7 @@ const PAGE_ICONS: Record<string, ReactNode> = {
   membership: <Gift className="h-4 w-4" />,
   reviews: <Star className="h-4 w-4" />,
   chat: <MessageSquare className="h-4 w-4" />,
+  promotions: <Zap className="h-4 w-4" />,
   about: <Info className="h-4 w-4" />,
   blog: <FileText className="h-4 w-4" />,
   'our-story': <FileText className="h-4 w-4" />,
@@ -72,7 +74,8 @@ export function TenantHeader() {
       .map((page) => (page === 'contact' ? 'about' : page));
 
     const filtered = normalised.filter((page) => !ARCHIVE_PAGE_SET.has(page));
-    const withBlog = filtered.includes('blog') ? filtered : [...filtered, 'blog'];
+    const withPromotions = filtered.includes('promotions') ? filtered : [...filtered, 'promotions'];
+    const withBlog = withPromotions.includes('blog') ? withPromotions : [...withPromotions, 'blog'];
     const unique = Array.from(new Set(withBlog));
 
     return unique.length > 0 ? unique : DEFAULT_PUBLIC_PAGES;

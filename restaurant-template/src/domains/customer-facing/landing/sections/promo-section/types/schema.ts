@@ -11,6 +11,8 @@ const promotionItemSchema = z.object({
   perks: z.array(z.string()).optional(),
   ctaLabel: z.string().optional(),
   ctaHref: z.string().optional(),
+  imageUrl: z.string().url().optional(),
+  imageAlt: z.string().optional(),
 });
 
 export const promoContentZodSchema = z.object({

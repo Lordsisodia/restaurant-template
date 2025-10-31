@@ -1,14 +1,12 @@
 'use client';
 
-import { FormEvent, useMemo, useRef, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 
 import type { LucideIcon } from 'lucide-react';
 import {
   ArrowUp,
   CalendarClock,
   ChartNetworkIcon,
-  FolderCode,
-  Globe,
   ImageIcon,
   MapIcon,
   MessageCircle,
@@ -16,8 +14,6 @@ import {
   Paperclip,
   PenToolIcon,
   ScanTextIcon,
-  SendHorizontal,
-  BrainCog,
   SparklesIcon,
   UtensilsCrossed,
 } from 'lucide-react';
@@ -138,8 +134,7 @@ export const Component = ({
 
   const canSend = draft.trim().length > 0;
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
+  const handleSend = () => {
     if (!canSend) return;
     setDraft('');
   };
@@ -151,7 +146,7 @@ export const Component = ({
   return (
     <Card
       className={cn(
-        'flex h-full w-full max-w-[480px] flex-col gap-6 p-4 shadow-none',
+        'flex h-full min-h-0 w-full max-w-[480px] flex-col gap-6 p-4 shadow-none',
         compact && 'gap-4',
         disableMinHeight ? null : 'min-h-[800px]',
         className,
@@ -197,8 +192,8 @@ export const Component = ({
           </Button>
         </div>
       ) : null}
-      <CardContent className={cn('flex h-full flex-col p-0', contentClassName)}>
-        <div className={cn('flex h-full flex-col', compact ? 'gap-4' : 'gap-6')}>
+      <CardContent className={cn('flex h-full min-h-0 flex-col p-0', contentClassName)}>
+        <div className={cn('flex h-full min-h-0 flex-col', compact ? 'gap-4' : 'gap-6')}>
           <div className={cn('flex flex-col', headerPadding)}>
             <div className="mb-4 flex justify-center">
               <svg
@@ -345,8 +340,8 @@ export const Component = ({
             ) : null}
           </div>
 
-          <div className={cn('flex flex-1 flex-col', bodyPadding)}>
-            <div className="flex flex-1 flex-col overflow-hidden rounded-2xl border border-border/60 bg-background/90 shadow-inner backdrop-blur-sm">
+          <div className={cn('flex flex-1 min-h-0 flex-col', bodyPadding)}>
+            <div className="flex flex-1 min-h-0 flex-col overflow-hidden rounded-2xl border border-border/60 bg-background/90 shadow-inner backdrop-blur-sm">
               <div className={cn('flex-1 overflow-y-auto', messagePadding)}>
                 <div className="flex flex-col gap-3 text-sm text-muted-foreground">
                   <div className="flex justify-start">
@@ -361,94 +356,122 @@ export const Component = ({
                   </div>
                 </div>
               </div>
-              <form
-                onSubmit={handleSubmit}
-                className="flex flex-col gap-3 border-t border-border/60 bg-background/95 px-3 py-3"
-              >
-                <div
-                  className={cn(
-                    'relative flex flex-1 rounded-2xl border border-border/30 bg-[#14161c] transition-shadow focus-within:border-primary focus-within:shadow-[0_0_0_1px_rgba(var(--primary-rgb,255,255,255),0.35)]',
-                    compact && 'rounded-xl',
-                  )}
-                >
-                  <Textarea
-                    value={draft}
-                    onChange={(event) => setDraft(event.target.value)}
-                    placeholder="Ask me anything..."
-                    className={cn(
-                      'min-h-[96px] w-full resize-none border-none bg-transparent py-4 pl-12 pr-28 text-sm leading-relaxed text-foreground shadow-none focus-visible:ring-0 focus-visible:ring-offset-0 placeholder:text-muted-foreground/60',
-                      compact && 'min-h-[72px]',
-                    )}
-                  />
-                  <div className="pointer-events-none absolute left-4 top-4 flex h-6 w-6 items-center justify-center text-muted-foreground/80">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" className="size-4">
-                      <g fill="none" stroke="currentColor" strokeWidth="1.5">
-                        <circle cx="11.5" cy="11.5" r="9.5" />
-                        <path strokeLinecap="round" d="M18.5 18.5L22 22" />
-                      </g>
-                    </svg>
-                  </div>
-                  <div className="absolute bottom-3 right-3 flex items-center gap-1">
-                    <Button type="button" variant="ghost" size="icon" className="size-9 text-muted-foreground">
-                      <Mic className="size-4" />
-                      <span className="sr-only">Record a voice note</span>
-                    </Button>
-                    <Button type="submit" disabled={!canSend} className="gap-1">
-                      Send
-                      <SendHorizontal className="size-4" />
-                    </Button>
-                  </div>
-                </div>
-
-                <div className="flex flex-col gap-2 rounded-xl border border-border/60 bg-muted/40 px-3 py-2 sm:flex-row sm:items-center sm:justify-between">
-                  <Select defaultValue={defaultModel}>
-                    <SelectTrigger className="h-8 w-full bg-background text-xs text-foreground sm:w-[140px]">
-                      <SelectValue placeholder="Select a model" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {modelOptions.map(({ value, label }) => (
-                        <SelectItem key={value} className="text-xs" value={value}>
-                          {label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-
-                  <div className="flex flex-wrap items-center justify-end gap-1">
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      className="h-8 gap-2 px-3 text-xs text-muted-foreground transition hover:text-foreground"
-                    >
-                      <Paperclip className="size-3.5" />
-                      Attach
-                    </Button>
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      className="h-8 gap-2 px-3 text-xs text-muted-foreground transition hover:text-foreground"
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="1em"
-                        height="1em"
-                        viewBox="0 0 24 24"
-                        className="size-3.5"
-                      >
-                        <g fill="none" stroke="currentColor" strokeWidth="1.5">
-                          <path strokeLinecap="round" d="M13.294 7.17L12 12l-1.294 4.83" />
-                          <path d="M2 12c0-4.714 0-7.071 1.464-8.536C4.93 2 7.286 2 12 2s7.071 0 8.535 1.464C22 4.93 22 7.286 22 12s0 7.071-1.465 8.535C19.072 22 16.714 22 12 22s-7.071 0-8.536-1.465C2 19.072 2 16.714 2 12Z" />
-                        </g>
-                      </svg>
-                      Shortcuts
-                    </Button>
-                  </div>
-                </div>
-              </form>
+              <PromptComposer
+                value={draft}
+                onChange={setDraft}
+                onSubmit={handleSend}
+                canSend={canSend}
+                modelOptions={modelOptions}
+                defaultModel={defaultModel}
+                compact={compact}
+              />
             </div>
           </div>
         </div>
       </CardContent>
     </Card>
+  );
+};
+
+type PromptComposerProps = {
+  value: string;
+  onChange: (value: string) => void;
+  onSubmit: () => void;
+  canSend: boolean;
+  modelOptions: ModelOption[];
+  defaultModel: string;
+  compact?: boolean;
+};
+
+const PromptComposer = ({ value, onChange, onSubmit, canSend, modelOptions, defaultModel, compact }: PromptComposerProps) => {
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const placeholder = useMemo(() => 'Ask me anything…', []);
+
+  const handleSubmit = () => {
+    if (!canSend) return;
+    onSubmit();
+  };
+
+  return (
+    <div className={cn('rounded-3xl border border-white/10 bg-[#1F2023] p-3 shadow-[0_10px_26px_rgba(0,0,0,0.32)]', compact && 'rounded-2xl p-2.5')}>
+      <Textarea
+        value={value}
+        onChange={(event) => onChange(event.target.value)}
+        onKeyDown={(event) => {
+          if (event.key === 'Enter' && !event.shiftKey) {
+            event.preventDefault();
+            handleSubmit();
+          }
+        }}
+        placeholder={placeholder}
+        className={cn(
+          'min-h-[72px] w-full resize-none border-none bg-transparent px-0 text-sm leading-relaxed text-white placeholder:text-white/50 focus-visible:ring-0 focus-visible:ring-offset-0',
+          compact && 'min-h-[60px] text-sm'
+        )}
+      />
+
+      <div className="mt-2.5 flex flex-col gap-2.5">
+        <div className="flex items-center justify-end gap-1.5">
+          <div className="flex items-center gap-2 self-end sm:self-auto">
+            <Button type="button" variant="ghost" size="icon" className="h-8 w-8 rounded-full text-white/70 hover:text-white">
+              <Mic className="size-3.5" />
+              <span className="sr-only">Record a voice note</span>
+            </Button>
+            <Button
+              type="button"
+              onClick={handleSubmit}
+              className={cn(
+                'h-8 w-8 rounded-full transition',
+                canSend ? 'bg-white text-[#1F2023] hover:bg-white/80' : 'bg-white/10 text-white/40'
+              )}
+              disabled={!canSend}
+            >
+              <ArrowUp className="size-3.5" />
+              <span className="sr-only">Send message</span>
+            </Button>
+          </div>
+        </div>
+
+        <div className="flex flex-wrap items-center gap-1.5 border-t border-white/10 pt-2.5">
+          <Select defaultValue={defaultModel}>
+            <SelectTrigger className="h-8 w-[135px] rounded-full border-white/15 bg-[#111217] text-xs text-white/80">
+              <SelectValue placeholder="Select a model" />
+            </SelectTrigger>
+            <SelectContent>
+              {modelOptions.map(({ value: optionValue, label }) => (
+                <SelectItem key={optionValue} className="text-xs" value={optionValue}>
+                  {label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+
+          <Button
+            type="button"
+            variant="ghost"
+            className="h-8 gap-1.5 rounded-full px-3 text-xs text-white/70 transition hover:text-white"
+            onClick={() => fileInputRef.current?.click()}
+          >
+            <Paperclip className="size-3" />
+            Attach
+          </Button>
+          <input
+            ref={fileInputRef}
+            type="file"
+            className="hidden"
+            onChange={(event) => {
+              if (event.target) {
+                event.target.value = '';
+              }
+            }}
+          />
+          <Button type="button" variant="ghost" className="h-8 gap-1.5 rounded-full px-3 text-xs text-white/70 transition hover:text-white">
+            <SparklesIcon className="size-3" />
+            Shortcuts
+          </Button>
+        </div>
+      </div>
+    </div>
   );
 };

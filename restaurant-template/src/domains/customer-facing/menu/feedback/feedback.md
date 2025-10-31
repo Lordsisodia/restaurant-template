@@ -34,3 +34,4 @@ Use this living document to capture and resolve feedback specific to the menu do
 | 2025-10-31 | Client request | Restore sticky category selector for quick navigation | 2025-10-31 | Reinstated dropdown selector with smooth scroll + active tracking |
 | 2025-10-31 | Client request | Give category group headings the landing-style underline treatment | 2025-10-31 | Swapped group titles to `AnimatedText` with gradient underline |
 | 2025-10-31 | Client request | Restyle "About Our Menu" card to match darker theme | 2025-10-31 | Rebuilt panel with dark glass background, white typography, and primary CTA |
+| 2025-10-31 | Client request | Split categories into dedicated `/menu/categories` view | 2025-10-31 | Added new route with vertical sections + dropdown linking from menu page |

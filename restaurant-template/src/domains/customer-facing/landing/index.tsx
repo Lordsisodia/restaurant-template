@@ -46,6 +46,8 @@ export default async function LandingPage() {
       timeRange: '5:00 – 7:00 PM',
       highlight: '2-for-1 Drinks',
       perks: ['Members earn 2× loyalty points'],
+      imageUrl: 'https://images.unsplash.com/photo-1497534446932-c925b458314e?w=600&q=80',
+      imageAlt: 'Two espresso martinis on a bar counter',
     },
     {
       day: 'Tuesday',
@@ -53,6 +55,8 @@ export default async function LandingPage() {
       description: 'All signature pies are 20% off — perfect for a midweek treat.',
       timeRange: 'All day',
       highlight: 'Kitchen Special',
+      imageUrl: 'https://images.unsplash.com/photo-1548366086-7e82f0a6c07c?w=600&q=80',
+      imageAlt: 'Wood-fired pizza being sliced',
     },
     {
       day: 'Thursday',
@@ -61,6 +65,8 @@ export default async function LandingPage() {
       timeRange: '8:00 – 11:00 PM',
       highlight: 'Live Entertainment',
       perks: ['Free entry for members', 'Happy hour pricing on cocktails'],
+      imageUrl: 'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=600&q=80',
+      imageAlt: 'Singer performing under warm stage lights',
     },
     {
       day: 'Friday',
@@ -68,6 +74,8 @@ export default async function LandingPage() {
       description: 'Complimentary chef bite with every draft beer ordered during the night session.',
       timeRange: '6:00 – 10:00 PM',
       highlight: 'Kitchen Pairing',
+      imageUrl: 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=600&q=80',
+      imageAlt: 'Craft beers with bar snacks',
     },
     {
       day: 'Saturday',
@@ -77,6 +85,8 @@ export default async function LandingPage() {
       highlight: 'Weekend Spotlight',
       ctaLabel: 'Reserve a Table',
       ctaHref: '/reservations',
+      imageUrl: 'https://images.unsplash.com/photo-1559339352-11d035aa65de?w=600&q=80',
+      imageAlt: 'Plated fine-dining dish',
     },
     {
       day: 'Sunday',
@@ -84,6 +94,8 @@ export default async function LandingPage() {
       description: 'Kids eat free with any adult entrée. Acoustic set from 11:00 AM.',
       timeRange: '10:00 AM – 2:00 PM',
       highlight: 'Family Day',
+      imageUrl: 'https://images.unsplash.com/photo-1512058564366-18510be2db19?w=600&q=80',
+      imageAlt: 'Brunch table spread with pancakes and fruit',
     },
   ];
 
@@ -107,6 +119,8 @@ export default async function LandingPage() {
         const tag = optionalString(raw.tag);
         const ctaLabel = optionalString(raw.ctaLabel);
         const ctaHref = optionalString(raw.ctaHref);
+        const imageUrl = optionalString(raw.imageUrl);
+        const imageAlt = optionalString(raw.imageAlt);
 
         let perks: string[] | undefined;
         if (Array.isArray(raw.perks)) {
@@ -118,7 +132,7 @@ export default async function LandingPage() {
           }
         }
 
-        return { day, title, description, timeRange, highlight, tag, ctaLabel, ctaHref, perks } satisfies PromotionItem;
+        return { day, title, description, timeRange, highlight, tag, ctaLabel, ctaHref, perks, imageUrl, imageAlt } satisfies PromotionItem;
       })
       .filter((item): item is PromotionItem => Boolean(item));
 
@@ -332,10 +346,8 @@ export default async function LandingPage() {
       promoConfig.description ??
       'DJ-curated sets, signature cocktails, and wood-fired bites every Friday and Saturday evening.',
     schedule: promoConfig.schedule ?? 'Fridays & Saturdays · 5:00 PM – Late',
-    imageUrl:
-      promoConfig.imageUrl ??
-      'https://images.unsplash.com/photo-1544145945-f90425340c7e?w=900&q=80',
-    imageAlt: promoConfig.imageAlt ?? 'Signature espresso cocktail garnished with citrus peel',
+    imageUrl: optionalString(promoConfig.imageUrl),
+    imageAlt: optionalString(promoConfig.imageAlt),
     badge: promoConfig.badge ?? 'New',
     ctaLabel: promoConfig.ctaLabel ?? 'See Promotions',
     ctaHref: promoConfig.ctaHref ?? '/promotions',

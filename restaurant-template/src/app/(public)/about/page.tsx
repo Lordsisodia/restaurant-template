@@ -9,10 +9,28 @@ export const metadata: Metadata = {
 
 const ABOUT_DATA: AboutPageData = {
   hero: {
-    title: "About Draco Coffee & Eatery",
-    subtitle: "Where strong coffee meets authentic flavor.",
+    pillText: "Our Story",
+    title: "Savor Bali’s energy, one cup at a time.",
+    subtitle: "Neighborhood coffee, late-night plates, and a community powered by bold flavor.",
+    description: "Born in Denpasar in 2020, Draco Coffee & Eatery celebrates Indonesian staples, vinyl-laced evenings, and connections that linger long after the last sip.",
     imageUrl: "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=1920&q=90",
-    description: "Nestled in the heart of Denpasar, serving Bali's boldest coffee and most authentic flavors since our opening.",
+    primaryCta: {
+      label: "Book a Visit",
+      href: "#location",
+      style: "primary",
+      ariaLabel: "Book a table or visit Draco Coffee",
+    },
+    secondaryCta: {
+      label: "Meet the Team",
+      href: "#team",
+      style: "secondary",
+    },
+    metaBadges: [
+      { id: "founded", label: "Since", value: "2020" },
+      { id: "hours", label: "Open Until", value: "23:00" },
+      { id: "rating", label: "Guest Rating", value: "4.6 ★" },
+      { id: "vibe", label: "Late-Night Vibe", value: "Vinyl & Espresso" },
+    ],
   },
   
   venueGallery: {
