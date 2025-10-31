@@ -3,7 +3,8 @@
 import { useState } from 'react';
 import type { ReviewsGridComponentProps, ReviewsGridReview } from '../../types';
 import { ImageLightboxPrimary } from '@/domains/customer-facing/reviews/sections/image-lightbox/templates/primary';
-import { ReviewCardPrimary } from '@/domains/customer-facing/reviews/sections/review-card/templates/primary';
+import { ReviewCardRenderer } from '@/domains/customer-facing/reviews/sections/review-card';
+import { reviewTheme } from '@/domains/customer-facing/reviews/shared/config/review-theme';
 
 export default function ReviewsGridPrimary({ content, onHelpfulClick }: ReviewsGridComponentProps) {
   const { reviews } = content;
@@ -40,9 +41,10 @@ export default function ReviewsGridPrimary({ content, onHelpfulClick }: ReviewsG
   }
 
   const renderCard = (review: ReviewsGridReview) => (
-    <ReviewCardPrimary
+    <ReviewCardRenderer
       key={review.id}
-      review={review}
+      variant={reviewTheme.cardVariant}
+      content={review}
       onImageClick={openLightbox}
       onHelpfulClick={onHelpfulClick}
     />

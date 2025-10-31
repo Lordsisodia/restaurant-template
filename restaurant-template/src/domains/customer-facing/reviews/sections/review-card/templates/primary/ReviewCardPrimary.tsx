@@ -39,28 +39,25 @@ export default function ReviewCardPrimary({ review, onImageClick, onHelpfulClick
   return (
     <div
       className={cn(
-        'w-full p-1.5 rounded-2xl relative isolate overflow-hidden',
-        'bg-gradient-to-br from-zinc-800/80 to-zinc-850/90 dark:from-zinc-800/70 dark:to-zinc-850/80',
-        'backdrop-blur-xl backdrop-saturate-[180%]',
-        'border border-zinc-700/60 dark:border-zinc-700/50',
-        'shadow-[0_8px_24px_rgb(0_0_0_/_0.25)] dark:shadow-[0_8px_24px_rgb(0_0_0_/_0.4)]',
-        'transition-all hover:shadow-[0_12px_32px_rgb(0_0_0_/_0.35)] dark:hover:shadow-[0_12px_32px_rgb(0_0_0_/_0.5)]',
-        featured && 'ring-2 ring-yellow-500/40 dark:ring-yellow-500/50'
+        'relative isolate w-full overflow-hidden rounded-2xl border border-slate-200/70 bg-gradient-to-br',
+        'from-white via-white to-slate-50 p-1.5 shadow-[0_18px_40px_-20px_rgba(15,23,42,0.35)]',
+        'transition-all duration-300 hover:shadow-[0_24px_52px_-24px_rgba(15,23,42,0.45)]',
+        'dark:border-zinc-800/80 dark:from-zinc-900 dark:via-zinc-900 dark:to-zinc-950',
+        'dark:shadow-[0_18px_45px_-18px_rgba(0,0,0,0.65)] dark:hover:shadow-[0_24px_56px_-20px_rgba(0,0,0,0.75)]',
+        featured && 'ring-2 ring-primary/30 dark:ring-primary/40'
       )}
     >
       <div
         className={cn(
-          'w-full p-5 rounded-xl relative',
-          'bg-gradient-to-br from-zinc-800/60 to-zinc-850/70 dark:from-zinc-800/40 dark:to-zinc-850/50',
-          'backdrop-blur-md backdrop-saturate-150',
-          'border border-zinc-700/40 dark:border-zinc-700/30',
-          'text-gray-300 dark:text-gray-200'
+          'relative w-full rounded-xl border border-slate-100/70 bg-white/95 p-5 text-slate-700',
+          'shadow-[0_10px_30px_-22px_rgba(15,23,42,0.6)]',
+          'dark:border-zinc-800/60 dark:bg-zinc-900/70 dark:text-zinc-100'
         )}
       >
         <div className="flex gap-3">
           <div className="flex-shrink-0">
-            <div className="h-10 w-10 rounded-full overflow-hidden bg-gradient-to-br from-primary/30 to-primary/20 dark:from-primary/40 dark:to-primary/30 flex items-center justify-center border border-primary/20 dark:border-primary/30">
-              <span className="text-lg font-bold text-primary dark:text-primary">
+            <div className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-full border border-primary/20 bg-gradient-to-br from-primary/10 via-primary/5 to-primary/20 dark:border-primary/30 dark:from-primary/25 dark:via-primary/15 dark:to-primary/35">
+              <span className="text-lg font-bold text-primary-700 dark:text-primary-200">
                 {authorName.charAt(0).toUpperCase()}
               </span>
             </div>
@@ -70,14 +67,14 @@ export default function ReviewCardPrimary({ review, onImageClick, onHelpfulClick
             <div className="flex justify-between items-start">
               <div className="flex flex-col">
                 <div className="flex items-center gap-1">
-                  <span className="font-semibold text-gray-200 dark:text-gray-200">{authorName}</span>
-                  {verified && <VerifiedIcon className="h-4 w-4 text-blue-400 dark:text-blue-400" />}
-                  {featured && <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />}
+                  <span className="font-semibold text-slate-900 dark:text-zinc-100">{authorName}</span>
+                  {verified && <VerifiedIcon className="h-4 w-4 text-primary dark:text-primary-300" />}
+                  {featured && <Star className="h-4 w-4 fill-yellow-400 text-yellow-500" />}
                 </div>
-                <div className="mt-0.5 flex items-center gap-1.5 text-sm text-gray-500 dark:text-gray-500">
+                <div className="mt-0.5 flex items-center gap-1.5 text-sm text-slate-500 dark:text-zinc-400">
                   <span>{source === 'website' ? 'Website Review' : source}</span>
-                  <span className="text-gray-600 dark:text-gray-600">·</span>
-                  <span>{timeAgo}</span>
+                  <span className="text-slate-300 dark:text-zinc-600">·</span>
+                  <span className="text-slate-500 dark:text-zinc-400">{timeAgo}</span>
                 </div>
               </div>
 
@@ -88,8 +85,8 @@ export default function ReviewCardPrimary({ review, onImageClick, onHelpfulClick
                     className={cn(
                       'h-4 w-4',
                       filled
-                        ? 'fill-yellow-400 text-yellow-400'
-                        : 'fill-zinc-700/50 dark:fill-zinc-700/50 text-zinc-700/50 dark:text-zinc-700/50'
+                        ? 'fill-yellow-400 text-yellow-500'
+                        : 'fill-slate-200 text-slate-200 dark:fill-zinc-700/50 dark:text-zinc-700/50'
                     )}
                   />
                 ))}
@@ -99,7 +96,7 @@ export default function ReviewCardPrimary({ review, onImageClick, onHelpfulClick
         </div>
 
         <div className="mt-3">
-          <p className="text-gray-300 dark:text-gray-300 text-base leading-relaxed">{comment}</p>
+          <p className="text-base leading-relaxed text-slate-600 dark:text-zinc-200">{comment}</p>
         </div>
 
         {images.length > 0 && (
@@ -108,7 +105,7 @@ export default function ReviewCardPrimary({ review, onImageClick, onHelpfulClick
               <button
                 key={idx}
                 onClick={() => onImageClick?.(images, idx)}
-                className="relative aspect-square overflow-hidden rounded-lg border border-zinc-700/50 dark:border-zinc-700/50 hover:opacity-90 transition-opacity"
+                className="relative aspect-square overflow-hidden rounded-lg border border-slate-200/80 hover:opacity-90 transition-opacity dark:border-zinc-700/60"
               >
                 <Image
                   src={img}
@@ -132,7 +129,7 @@ export default function ReviewCardPrimary({ review, onImageClick, onHelpfulClick
             {metadata.highlights.slice(0, 3).map((highlight, index) => (
               <span
                 key={index}
-                className="rounded-full border border-zinc-700/50 dark:border-zinc-700/50 bg-zinc-800/60 dark:bg-zinc-800/50 px-3 py-1 text-xs font-medium text-gray-400 dark:text-gray-400"
+                className="rounded-full border border-slate-200/80 bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600 dark:border-zinc-700/60 dark:bg-zinc-800/60 dark:text-zinc-300"
               >
                 {highlight}
               </span>
@@ -141,40 +138,42 @@ export default function ReviewCardPrimary({ review, onImageClick, onHelpfulClick
         )}
 
         {ownerResponse && (
-          <div className="mt-4 pt-4 border-t border-zinc-700/50 dark:border-zinc-700/50">
+          <div className="mt-4 pt-4 border-t border-slate-200/80 dark:border-zinc-800/60">
             <div className="flex gap-3">
               <div className="flex-shrink-0">
-                <div className="h-10 w-10 rounded-full overflow-hidden bg-gradient-to-br from-primary/25 to-primary/15 flex items-center justify-center border border-primary/25">
-                  <span className="text-sm font-bold text-white">🏪</span>
+                <div className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-full border border-primary/20 bg-gradient-to-br from-primary/10 via-primary/5 to-primary/20 dark:border-primary/25 dark:from-primary/25 dark:via-primary/15 dark:to-primary/35">
+                  <span className="text-sm font-bold text-primary-700 dark:text-primary-100">🏪</span>
                 </div>
               </div>
               <div className="flex-1">
                 <div className="mb-1 flex items-center gap-1.5">
-                  <span className="text-sm font-semibold text-gray-200 dark:text-gray-200">
+                  <span className="text-sm font-semibold text-slate-900 dark:text-zinc-100">
                     Response from Owner
                   </span>
-                  <VerifiedIcon className="h-4 w-4 text-blue-400 dark:text-blue-400" />
+                  <VerifiedIcon className="h-4 w-4 text-primary dark:text-primary-300" />
                   {ownerRespondedAt && (
                     <>
-                      <span className="text-xs text-gray-600 dark:text-gray-600">·</span>
-                      <span className="text-xs text-gray-500 dark:text-gray-500">
+                      <span className="text-xs text-slate-300 dark:text-zinc-600">·</span>
+                      <span className="text-xs text-slate-500 dark:text-zinc-400">
                         {formatDistanceToNow(new Date(ownerRespondedAt), { addSuffix: true })}
                       </span>
                     </>
                   )}
                 </div>
-                <p className="text-xs leading-relaxed text-muted-foreground">{ownerResponse}</p>
+                <p className="text-xs leading-relaxed text-slate-500 dark:text-zinc-300">{ownerResponse}</p>
               </div>
             </div>
           </div>
         )}
 
-        <div className="mt-4 flex items-center justify-between border-t border-zinc-700/50 dark:border-zinc-700/50 pt-3">
+        <div className="mt-4 flex items-center justify-between border-t border-slate-200/80 pt-3 dark:border-zinc-800/60">
           <button
             onClick={handleHelpfulClick}
             disabled={isHelpfulClicked}
             className={`flex items-center gap-1.5 text-xs font-medium transition-colors ${
-              isHelpfulClicked ? 'text-primary' : 'text-muted-foreground hover:text-foreground'
+              isHelpfulClicked
+                ? 'text-primary'
+                : 'text-slate-500 hover:text-slate-700 dark:text-zinc-400 dark:hover:text-zinc-200'
             }`}
           >
             <span>{isHelpfulClicked ? '👍' : '👍🏼'}</span>
@@ -185,7 +184,7 @@ export default function ReviewCardPrimary({ review, onImageClick, onHelpfulClick
             onClick={() => {
               navigator.clipboard.writeText(`${window.location.origin}/reviews#${id}`);
             }}
-            className="text-xs font-medium text-muted-foreground hover:text-foreground"
+            className="text-xs font-medium text-slate-500 hover:text-slate-700 dark:text-zinc-400 dark:hover:text-zinc-200"
           >
             Share
           </button>

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from 'next/link';
-import { Clock, MapPin, MessageCircle, Phone, Bike } from 'lucide-react';
+import { Clock, MapPin, MessageCircle, Phone, Bike, Sparkles } from 'lucide-react';
 import type { ReactNode } from 'react';
 import type { EssentialsContent } from '../../types/schema';
 
@@ -11,6 +11,8 @@ export default function EssentialsPrimary({
   whatsapp,
   phone,
   partners,
+  membershipHref,
+  membershipLabel,
 }: EssentialsContent) {
   const tel = normalizePhone(phone);
   const wa = normalizePhone(whatsapp);
@@ -21,6 +23,9 @@ export default function EssentialsPrimary({
       <div className="flex flex-wrap gap-2">
         {hours ? (
           <Chip icon={<Clock className="h-4 w-4" />} label={hours} />
+        ) : null}
+        {membershipHref ? (
+          <Chip asLink href={membershipHref} icon={<Sparkles className="h-4 w-4" />} label={membershipLabel ?? 'Join Membership'} />
         ) : null}
         {address && mapHref ? (
           <Chip asLink href={mapHref} icon={<MapPin className="h-4 w-4" />} label="Map" />

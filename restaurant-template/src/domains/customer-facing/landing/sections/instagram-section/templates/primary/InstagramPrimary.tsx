@@ -41,34 +41,37 @@ export default function InstagramPrimary({
           />
         </div>
 
-        <div className="mb-8 grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-6">
-          {images.slice(0, 6).map((img, idx) => (
-            <a
-              key={idx}
-              href={instagramUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="group relative aspect-square overflow-hidden rounded-lg"
-              onMouseEnter={() => setHoveredIndex(idx)}
-              onMouseLeave={() => setHoveredIndex(null)}
-            >
-              <Image
-                src={img}
-                alt={`Instagram post ${idx + 1}`}
-                fill
-                className="object-cover transition-transform duration-300 group-hover:scale-110"
-              />
-              <div
-                className={`absolute inset-0 bg-gradient-to-t from-black/60 to-transparent transition-opacity duration-300 ${
-                  hoveredIndex === idx ? "opacity-100" : "opacity-0"
-                }`}
+        <div className="mb-8 overflow-x-auto pb-2">
+          <div className="flex snap-x snap-mandatory gap-3 [&::-webkit-scrollbar]:hidden">
+            {images.map((img, idx) => (
+              <a
+                key={idx}
+                href={instagramUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group relative aspect-square w-[200px] flex-shrink-0 overflow-hidden rounded-2xl border border-border/60 snap-center"
+                onMouseEnter={() => setHoveredIndex(idx)}
+                onMouseLeave={() => setHoveredIndex(null)}
               >
-                <div className="absolute bottom-3 left-3">
-                  <Instagram className="h-6 w-6 text-white" />
+                <Image
+                  src={img}
+                  alt={`Instagram post ${idx + 1}`}
+                  fill
+                  className="object-cover transition-transform duration-300 group-hover:scale-110"
+                  sizes="200px"
+                />
+                <div
+                  className={`absolute inset-0 bg-gradient-to-t from-black/60 to-transparent transition-opacity duration-300 ${
+                    hoveredIndex === idx ? "opacity-100" : "opacity-0"
+                  }`}
+                >
+                  <div className="absolute bottom-3 left-3">
+                    <Instagram className="h-6 w-6 text-white" />
+                  </div>
                 </div>
-              </div>
-            </a>
-          ))}
+              </a>
+            ))}
+          </div>
         </div>
 
         <div className="flex justify-center">

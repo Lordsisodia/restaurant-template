@@ -79,6 +79,73 @@ function getSupportingImages(post: PostContent): MediaImage[] {
   return fallbackImagesByCategory[key] ?? fallbackImagesByCategory.default;
 }
 
+function hasHtmlTags(content: string) {
+  return /<\/?[a-z][\s\S]*>/i.test(content);
+}
+
+function convertPlainTextToHtml(content: string) {
+  const normalized = content.replace(/\r\n/g, '\n').trim();
+  if (!normalized) return '';
+
+  const rawBlocks = normalized.split(/\n{2,}/);
+  const unorderedPattern = /^[-*+]\s+/;
+  const orderedPattern = /^\d+[.)]\s+/;
+  const htmlBlocks: string[] = [];
+
+  for (let i = 0; i < rawBlocks.length; i += 1) {
+    const block = rawBlocks[i]?.trim();
+    if (!block) continue;
+
+    const lines = block
+      .split('\n')
+      .map((line) => line.trim())
+      .filter(Boolean);
+
+    if (lines.length === 0) continue;
+
+    const isUnorderedList = lines.every((line) => unorderedPattern.test(line));
+    if (isUnorderedList) {
+      const items = lines
+        .map((line) => `<li>${htmlEscape(line.replace(unorderedPattern, ''))}</li>`)
+        .join('');
+      htmlBlocks.push(`<ul>${items}</ul>`);
+      continue;
+    }
+
+    const isOrderedList = lines.every((line) => orderedPattern.test(line));
+    if (isOrderedList) {
+      const items = lines
+        .map((line) => `<li>${htmlEscape(line.replace(orderedPattern, ''))}</li>`)
+        .join('');
+      htmlBlocks.push(`<ol>${items}</ol>`);
+      continue;
+    }
+
+    const [firstLine] = lines;
+    const isHeadingCandidate =
+      lines.length === 1 &&
+      firstLine.length <= 80 &&
+      !/[.!?]$/.test(firstLine) &&
+      /^[A-Za-z0-9]/.test(firstLine) &&
+      (i < rawBlocks.length - 1);
+
+    if (isHeadingCandidate) {
+      htmlBlocks.push(`<h2>${htmlEscape(firstLine)}</h2>`);
+      continue;
+    }
+
+    const paragraph = lines.map((line) => htmlEscape(line)).join(' ');
+    htmlBlocks.push(`<p>${paragraph}</p>`);
+  }
+
+  return htmlBlocks.join('');
+}
+
+function ensureHtmlContent(content: string | null | undefined) {
+  if (!content) return null;
+  return hasHtmlTags(content) ? content : convertPlainTextToHtml(content);
+}
+
 function stripHtml(html: string) {
   return html.replace(/<\/?[^>]+(>|$)/g, ' ').replace(/\s+/g, ' ').trim();
 }
@@ -146,11 +213,12 @@ function extractKeyPoints(html: string | null | undefined, limit = 3) {
 
 export default function PostPrimary(post: PostContent) {
   const supportingImages = getSupportingImages(post);
-  const { lead, body } = extractLeadAndBody(post.content);
+  const normalizedContent = ensureHtmlContent(post.content);
+  const { lead, body } = extractLeadAndBody(normalizedContent);
   const { html: richHtml, used: usedImages } = injectMediaBlocks(body, supportingImages);
   const remainingImages = supportingImages.slice(usedImages);
-  const keyPoints = extractKeyPoints(post.content);
-  const wordCount = stripHtml(post.content ?? '').split(' ').filter(Boolean).length;
+  const keyPoints = extractKeyPoints(normalizedContent);
+  const wordCount = stripHtml(normalizedContent ?? '').split(' ').filter(Boolean).length;
   const estimatedMinutes = post.readTimeMinutes ?? Math.max(3, Math.round(wordCount / 180));
 
   return (
@@ -168,7 +236,7 @@ export default function PostPrimary(post: PostContent) {
 
           {post.content ? (
             <div
-              className="prose prose-lg prose-invert max-w-none text-white/80 prose-headings:font-semibold prose-headings:text-white prose-h2:mt-14 prose-h2:mb-6 prose-h3:mt-10 prose-h3:mb-4 prose-p:leading-8 prose-p:mb-6 prose-a:text-amber-300 prose-a:no-underline hover:prose-a:text-amber-200 prose-strong:text-white prose-ul:my-6 prose-li:text-white/75 prose-img:rounded-3xl prose-img:border prose-img:border-white/10 prose-img:shadow-xl prose-blockquote:border-l-4 prose-blockquote:border-amber-400/60 prose-blockquote:pl-6 prose-blockquote:text-white/70"
+              className="prose prose-lg prose-invert max-w-none text-white/80 prose-headings:font-semibold prose-headings:text-white prose-h2:mt-14 prose-h2:mb-6 prose-h2:text-3xl prose-h2:tracking-tight prose-h3:mt-10 prose-h3:mb-4 prose-h3:text-2xl prose-p:mb-6 prose-p:leading-8 prose-p:rounded-3xl prose-p:border prose-p:border-white/10 prose-p:bg-[#0b0b10] prose-p:px-6 prose-p:py-6 prose-a:text-amber-300 prose-a:no-underline hover:prose-a:text-amber-200 prose-strong:text-white prose-ul:my-6 prose-ul:list-disc prose-ul:rounded-3xl prose-ul:border prose-ul:border-white/10 prose-ul:bg-[#0b0b10] prose-ul:px-6 prose-ul:py-6 prose-ol:my-6 prose-ol:list-decimal prose-ol:rounded-3xl prose-ol:border prose-ol:border-white/10 prose-ol:bg-[#0b0b10] prose-ol:px-6 prose-ol:py-6 prose-li:text-white/75 prose-li:marker:text-amber-300 prose-img:rounded-3xl prose-img:border prose-img:border-white/10 prose-img:shadow-xl prose-blockquote:border-l-4 prose-blockquote:border-amber-400/60 prose-blockquote:pl-6 prose-blockquote:text-white/70"
               dangerouslySetInnerHTML={{ __html: richHtml || body }}
             />
           ) : (

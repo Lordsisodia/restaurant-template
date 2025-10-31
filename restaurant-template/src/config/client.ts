@@ -93,7 +93,8 @@ export const clientInfo = {
       handle: "", // TBD
       url: ""     // TBD
     },
-    googleMaps: "" // TBD
+    googleMaps: "https://www.google.com/maps/place/Draco+Coffee+And+Eatery/@-8.6856566,115.1867979,17z/data=!4m8!3m7!1s0x2dd2474d57326e0d:0x776920163581ffe5!8m2!3d-8.6856566!4d115.1867979!9m1!1b1!16s%2Fg%2F11rnnyn50m",
+    googleWriteReview: "https://www.google.com/maps/place/Draco+Coffee+And+Eatery/reviews"
   },
 
   delivery: {

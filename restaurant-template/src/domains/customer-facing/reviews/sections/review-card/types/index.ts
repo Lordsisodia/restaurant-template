@@ -1,7 +1,7 @@
 import type { ComponentType } from 'react';
 import type { ReviewCardContent } from './schema';
 
-export type ReviewCardVariant = 'primary';
+export type ReviewCardVariant = 'primary' | 'noir';
 
 export interface ReviewCardRendererProps {
   variant?: ReviewCardVariant;

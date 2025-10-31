@@ -6,8 +6,8 @@ import type { HeroContent } from '../../types/schema';
 import { TextColor } from '../../shared/components/TextColor';
 
 export default function HeroPrimary({
-  title,
-  subtitle,
+  title = 'Specialty Coffee & Wood-Fired Plates',
+  subtitle = 'Daily-roasted coffee, wood-fired signatures, and late-night service in Denpasar.',
   imageUrl = '/images/shared/defaults/hero-default.jpg',
   primaryCta = { label: 'View Menu', href: '/menu' },
   secondaryCta = { label: 'Message on WhatsApp', href: '#' },
@@ -18,7 +18,7 @@ export default function HeroPrimary({
     <section className="relative isolate min-h-screen overflow-hidden lg:-mt-[80px]">
       <div className="absolute inset-0 -z-10">
         <ImageWithFallback src={imageUrl} alt={title} fill priority className="object-cover" />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/30 to-black/70" />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/65 via-black/45 to-black/80" />
       </div>
 
       <div className="mx-auto flex min-h-screen w-full max-w-5xl flex-col items-center justify-center gap-6 px-6 pt-24 text-center">

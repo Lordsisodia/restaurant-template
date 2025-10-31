@@ -1,5 +1,7 @@
 "use client";
 
+import { SectionHeading } from '@/domains/shared/components';
+
 import type { LoyaltyTopDinersContent } from '../../types/schema';
 
 export default function LoyaltyTopDinersPrimary(props: LoyaltyTopDinersContent) {
@@ -13,10 +15,14 @@ export default function LoyaltyTopDinersPrimary(props: LoyaltyTopDinersContent) 
 
   return (
     <section className="space-y-4">
-      <header className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
-        <h2 className="text-lg font-semibold text-foreground">{heading}</h2>
-        {subheading ? <p className="text-sm text-muted-foreground">{subheading}</p> : null}
-      </header>
+      <SectionHeading
+        centered={false}
+        title={heading}
+        subtitle={subheading}
+        as="h2"
+        className="mb-2"
+        titleClassName="text-xl font-semibold"
+      />
 
       {members.length === 0 ? (
         <div className="rounded-xl border border-dashed border-border bg-muted px-6 py-12 text-center text-muted-foreground">

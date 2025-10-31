@@ -9,19 +9,18 @@ export const metadata: Metadata = {
 
 const ABOUT_DATA: AboutPageData = {
   hero: {
-    title: "About Draco",
-    subtitle: "Where Strong Coffee Meets Authentic Flavor",
+    title: "About Draco Coffee & Eatery",
+    subtitle: "Where strong coffee meets authentic flavor.",
     imageUrl: "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=1920&q=90",
     description: "Nestled in the heart of Denpasar, serving Bali's boldest coffee and most authentic flavors since our opening.",
   },
   
   venueGallery: {
-    pillText: "Inside Draco",
     title: "Our Space in Motion",
     subtitle: "Snapshots from our space",
-    intro: "From sunlit mornings to vinyl-fuelled nights, here’s a rolling look at Draco’s energy.",
+    intro: "From sunlit mornings to vinyl-fuelled nights, here’s a rolling look at Draco’s energy—bold coffee rituals, late-night plates, and the community that shaped us.",
     layout: 'slider',
-    showCategories: true,
+    showCategories: false,
     images: [
       {
         id: "1",

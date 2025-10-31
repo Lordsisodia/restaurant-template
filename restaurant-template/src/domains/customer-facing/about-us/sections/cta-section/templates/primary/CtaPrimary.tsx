@@ -36,7 +36,7 @@ export default function CtaPrimary({
   const whatsappLink = whatsappNumber
     ? `https://wa.me/${whatsappNumber.replace(/[^+\d]/g, '')}?text=Hi!%20I’d%20like%20to%20know%20more%20about%20Draco%20Coffee`
     : undefined;
-  const headingPillText = 'Reserve Your Experience';
+  const headingPillText = undefined;
 
   return (
     <section className="relative overflow-hidden py-20 px-6 sm:py-32">
@@ -50,8 +50,8 @@ export default function CtaPrimary({
           pillText={headingPillText}
           title={title}
           subtitle={subtitle}
-          titleClassName="text-4xl sm:text-5xl md:text-6xl font-semibold tracking-tight"
-          className="mb-12 [&>p]:!text-lg md:[&>p]:!text-xl [&>p]:text-white/80"
+          titleClassName="text-3xl sm:text-4xl md:text-5xl font-semibold tracking-tight"
+          className="mb-10 [&>p]:!text-base md:[&>p]:!text-lg [&>p]:text-white/80"
           pillTone="light"
         />
 

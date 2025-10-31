@@ -22,7 +22,6 @@ export default function FeaturedRow({ posts }: FeaturedRowProps) {
       <div className="container mx-auto px-4">
         <div className="mb-4">
           <SectionHeading
-            pillText="Featured Stories"
             title="Featured Stories"
             centered={false}
             as="h2"

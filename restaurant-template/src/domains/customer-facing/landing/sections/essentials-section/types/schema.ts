@@ -7,6 +7,8 @@ export const essentialsContentZodSchema = z.object({
   whatsapp: z.string().nullable().optional(),
   phone: z.string().nullable().optional(),
   partners: z.array(z.string()).nullable().optional(),
+  membershipHref: z.string().nullable().optional(),
+  membershipLabel: z.string().nullable().optional(),
 });
 
 export const essentialsContentSchema = createSectionSchema(essentialsContentZodSchema);

@@ -9,10 +9,6 @@ import MenuErrorAlert from '../../shared/components/MenuErrorAlert';
 import MenuEmptyState from '../../shared/components/MenuEmptyState';
 import MenuAboutSection from '../../shared/components/MenuAboutSection';
 import {
-  MenuCategorySelectorRenderer,
-  type MenuCategorySelectorContent,
-} from '@/domains/customer-facing/menu/sections/menu-category-selector';
-import {
   MenuItemCardRenderer,
   type MenuItemCardContent,
 } from '@/domains/customer-facing/menu/sections/menu-item-card';
@@ -21,6 +17,31 @@ import {
   type MenuItemDetailContent,
 } from '@/domains/customer-facing/menu/sections/menu-item-detail';
 import type { MenuCategoriesContent } from '../../types';
+
+const GROUP_DEFINITIONS = [
+  { key: 'breakfast', label: 'Breakfast', patterns: [/breakfast/i, /brunch/i, /morning/i] },
+  { key: 'starters', label: 'Starters', patterns: [/starter/i, /appet/i, /snack/i, /small plate/i, /bite/i] },
+  { key: 'mains', label: 'Main Meals', patterns: [/main/i, /entree/i, /pasta/i, /pizza/i, /burger/i, /rice/i, /nasi/i, /noodle/i, /grill/i, /steak/i] },
+  { key: 'sides', label: 'Sides', patterns: [/side/i, /salad/i, /soup/i, /fries/i, /share/i, /snack/i] },
+  { key: 'dessert', label: 'Dessert', patterns: [/dessert/i, /sweet/i, /cake/i, /pastry/i, /bake/i, /ice cream/i] },
+  { key: 'coffee', label: 'Coffee & Tea', patterns: [/coffee/i, /espresso/i, /latte/i, /cappuccino/i, /tea/i, /matcha/i] },
+  { key: 'juices', label: 'Juices & Soft Drinks', patterns: [/juice/i, /smoothie/i, /shake/i, /soda/i, /mocktail/i, /lemonade/i, /cold brew/i] },
+  { key: 'alcohol', label: 'Alcoholic Drinks', patterns: [/alcohol/i, /cocktail/i, /wine/i, /beer/i, /spirit/i, /liquor/i] },
+];
+
+const DEFAULT_GROUP = { key: 'other', label: 'More to Explore' } as const;
+
+function resolveGroupForCategory(name: string) {
+  const match = GROUP_DEFINITIONS.find((definition) =>
+    definition.patterns.some((pattern) => pattern.test(name))
+  );
+
+  if (match) {
+    return match;
+  }
+
+  return DEFAULT_GROUP;
+}
 
 export default function MenuCategoriesPrimary({
   categories = [],
@@ -32,7 +53,6 @@ export default function MenuCategoriesPrimary({
   isSignedIn,
   about,
 }: MenuCategoriesContent) {
-  const [filterCategory, setFilterCategory] = useState<string>('all');
   const [selectedItem, setSelectedItem] = useState<MenuItem | null>(null);
 
   const menuItems = useMemo(() => items as MenuItem[], [items]);
@@ -49,31 +69,6 @@ export default function MenuCategoriesPrimary({
     () => groupMenuItemsByCategory(menuItems),
     [menuItems],
   );
-
-  const categoryOptions = useMemo(() => {
-    const enriched = sortedCategories.map((cat) => ({
-      ...cat,
-      itemCount: itemsByCategory[cat.id]?.length ?? 0,
-    }));
-
-    return [
-      {
-        id: 'all',
-        name: 'All',
-        description: 'Browse all items',
-        display_order: -1,
-        itemCount: menuItems.length,
-      },
-      ...enriched,
-    ];
-  }, [menuItems.length, itemsByCategory, sortedCategories]);
-
-  const visibleCategories = useMemo(() => {
-    if (filterCategory === 'all') {
-      return sortedCategories;
-    }
-    return sortedCategories.filter((cat) => cat.id === filterCategory);
-  }, [filterCategory, sortedCategories]);
 
   const loading = Boolean(isLoading);
   const error = hasError ? new Error(errorMessage ?? 'Failed to load menu data.') : null;
@@ -102,23 +97,6 @@ export default function MenuCategoriesPrimary({
       </div>
     );
   }
-
-  const selectorContent: MenuCategorySelectorContent = {
-    heading: 'Browse Our Menu',
-    summary: `${menuItems.length} items · ${sortedCategories.length} categories`,
-    filterLabel: 'Filter categories',
-    allLabel: 'All categories',
-    activeCategoryId: filterCategory,
-    showFilterToggle: true,
-    categories: categoryOptions.map((cat) => ({
-      id: cat.id,
-      name: cat.name,
-      description: cat.description ?? undefined,
-      count: cat.itemCount,
-      isActive: filterCategory === cat.id,
-      pillText: cat.id === 'all' ? 'FEATURED' : undefined,
-    })),
-  };
 
   const categoryNameById = useMemo(() => {
     return new Map(sortedCategories.map((cat) => [cat.id, cat.name]));
@@ -163,10 +141,6 @@ export default function MenuCategoriesPrimary({
     preparationNotes: undefined,
   });
 
-  const handleSelectCategory = (categoryId: string) => {
-    setFilterCategory(categoryId);
-  };
-
   const handleSelectItem = (itemId: string) => {
     const match = menuItems.find((entry) => entry.id === itemId);
     if (match) {
@@ -175,68 +149,134 @@ export default function MenuCategoriesPrimary({
   };
 
   const closeDetail = () => setSelectedItem(null);
+  const groupedSections = useMemo(() => {
+    type GroupAccumulator = {
+      key: string;
+      label: string;
+      categories: MenuCategory[];
+      items: MenuItem[];
+    };
 
-  const renderedCategories = visibleCategories.map((category) => ({
-    category,
-    items: itemsByCategory[category.id] ?? [],
-  }));
+    const accumulators = new Map<string, GroupAccumulator>();
+
+    sortedCategories.forEach((category) => {
+      const categoryItems = itemsByCategory[category.id] ?? [];
+
+      if (categoryItems.length === 0) {
+        return;
+      }
+
+      const groupDefinition = resolveGroupForCategory(category.name ?? '');
+
+      if (!accumulators.has(groupDefinition.key)) {
+        accumulators.set(groupDefinition.key, {
+          key: groupDefinition.key,
+          label: groupDefinition.label,
+          categories: [],
+          items: [],
+        });
+      }
+
+      const entry = accumulators.get(groupDefinition.key)!;
+      entry.categories.push(category);
+      entry.items.push(...categoryItems);
+    });
+
+    const orderedKeys = [...GROUP_DEFINITIONS.map((definition) => definition.key), DEFAULT_GROUP.key];
+
+    return orderedKeys
+      .map((key) => accumulators.get(key))
+      .filter((value): value is GroupAccumulator => Boolean(value));
+  }, [itemsByCategory, sortedCategories]);
 
   return (
-    <div className="min-h-screen bg-background pb-20">
-      <section className="w-full border-b border-white/10 bg-background/95 px-6 py-8 backdrop-blur-lg">
-        <div className="mx-auto w-full max-w-5xl">
-          <MenuCategorySelectorRenderer
-            content={selectorContent}
-            onSelectCategory={handleSelectCategory}
-          />
-        </div>
-      </section>
+    <div className="space-y-16">
+      <header className="space-y-3">
+        <p className="text-xs font-semibold uppercase tracking-[0.35em] text-white/60">Menu</p>
+        <h1 className="text-3xl font-semibold text-white md:text-4xl">Browse Our Menu</h1>
+        <p className="text-sm text-white/60 md:text-base">Curated sections keep things simple—jump into breakfast, mains, and drinks without endless scrolling.</p>
+      </header>
 
-      <div className="space-y-12 px-6 py-10">
-        {renderedCategories.some(({ items }) => items.length > 0) ? (
-          renderedCategories.map(({ category, items: categoryItems }) => {
-            if (categoryItems.length === 0) {
-              return null;
-            }
+      {groupedSections.length > 0 ? (
+        <div className="space-y-16">
+          {groupedSections.map((group) => {
+            const subcategorySummary = group.categories
+              .map((subcategory) => subcategory.name)
+              .filter(Boolean)
+              .join(' • ');
 
             return (
               <motion.section
-                key={category.id}
+                key={group.key}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.3 }}
-                className="space-y-6"
+                className="space-y-8"
               >
-                <div className="flex items-center justify-center">
-                  <span className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-2 text-xs font-medium uppercase tracking-[0.16em] text-white/80 shadow-sm backdrop-blur">
-                    {category.name}
-                    <span className="text-white/50">•</span>
-                    <span>{categoryItems.length} {categoryItems.length === 1 ? 'item' : 'items'}</span>
+                <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+                  <div className="space-y-1">
+                    <h2 className="text-2xl font-semibold text-white md:text-3xl">
+                      {group.label}
+                    </h2>
+                    {subcategorySummary ? (
+                      <p className="text-sm text-white/60 md:text-base">
+                        {subcategorySummary}
+                      </p>
+                    ) : null}
+                  </div>
+
+                  <span className="text-xs font-medium uppercase tracking-[0.22em] text-white/50">
+                    {group.items.length} {group.items.length === 1 ? 'item' : 'items'}
                   </span>
                 </div>
 
-                <div className="mx-auto max-w-6xl">
-                  <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
-                    {categoryItems.map((item) => (
-                      <MenuItemCardRenderer
-                        key={item.id}
-                        content={toCardContent(item)}
-                        onSelectItem={handleSelectItem}
-                      />
-                    ))}
-                  </div>
+                <div className="space-y-10">
+                  {group.categories.map((category) => {
+                    const categoryItems = itemsByCategory[category.id] ?? [];
+                    if (categoryItems.length === 0) {
+                      return null;
+                    }
+
+                    return (
+                      <div key={category.id} className="space-y-4">
+                        <div className="flex items-center justify-between">
+                          <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/8 px-4 py-2 text-xs font-medium uppercase tracking-[0.2em] text-white/80 shadow-sm backdrop-blur">
+                            {category.name}
+                            <span className="text-white/50">•</span>
+                            <span>{categoryItems.length} {categoryItems.length === 1 ? 'item' : 'items'}</span>
+                          </span>
+                        </div>
+
+                        <div className="-mx-2 overflow-x-auto pb-2">
+                          <div className="flex snap-x snap-mandatory gap-4 px-2 md:gap-6 md:px-3 lg:px-4">
+                            {categoryItems.map((item) => (
+                              <div
+                                key={item.id}
+                                className="w-[260px] shrink-0 snap-start md:w-[280px] lg:w-[320px]"
+                              >
+                                <MenuItemCardRenderer
+                                  content={toCardContent(item)}
+                                  onSelectItem={handleSelectItem}
+                                />
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
                 </div>
               </motion.section>
             );
-          })
-        ) : (
-          <div className="mx-auto max-w-4xl rounded-2xl border border-white/10 bg-white/5 p-10 text-center text-white/80">
-            No dishes found for this category yet. Please try another filter.
-          </div>
-        )}
-      </div>
+          })}
+        </div>
+      ) : (
+        <div className="mx-auto max-w-4xl rounded-2xl border border-white/10 bg-white/5 p-10 text-center text-white/80">
+          No dishes found yet. Please check back soon.
+        </div>
+      )}
 
-      <section className="mt-6 w-full px-6">
+      <section className="w-full">
         <div className="mx-auto w-full max-w-5xl">
           <div className="relative overflow-hidden rounded-2xl border border-white/15 bg-white/5 p-5 shadow-lg backdrop-blur-md sm:p-6">
             <div className="pointer-events-none absolute -top-16 -right-16 h-40 w-40 rounded-full bg-gradient-to-br from-purple-500/30 via-pink-500/20 to-orange-500/20 blur-3xl" />
@@ -266,7 +306,7 @@ export default function MenuCategoriesPrimary({
         </div>
       </section>
 
-      <section className="w-full px-6">
+      <section className="w-full">
         <div className="mx-auto w-full max-w-5xl">
           <MenuAboutSection about={about} />
         </div>

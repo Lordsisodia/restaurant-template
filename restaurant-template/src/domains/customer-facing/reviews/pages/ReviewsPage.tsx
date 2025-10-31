@@ -8,12 +8,8 @@
 import { createClient } from '@/lib/supabase/server';
 import { GuestFeedbackRenderer } from '../sections/guest-feedback-section';
 import type { GuestFeedbackContent, GuestFeedbackReview } from '../sections/guest-feedback-section';
-import {
-  getReviewsWithFilters,
-  getRatingStats,
-  getFeaturedTags,
-  getRatingBreakdown,
-} from '../shared/services';
+import { getReviewsWithFilters, getRatingStats, getFeaturedTags, getRatingBreakdown } from '../shared/services';
+import { resolveReviewImages } from '../shared/config/review-media';
 
 interface ReviewsPageProps {
   searchParams?: Promise<{
@@ -47,26 +43,47 @@ export default async function ReviewsPage({ searchParams }: ReviewsPageProps) {
     })(),
   ]);
 
-  const mappedReviews: GuestFeedbackReview[] = (reviews ?? []).map((review) => ({
-    id: review.id,
-    authorName: review.author_name ?? 'Guest',
-    rating: review.rating,
-    comment: review.comment ?? '',
-    publishedAt: review.published_at ?? new Date().toISOString(),
-    source: review.source ?? 'website',
-    verified: Boolean(review.verified),
-    featured: Boolean(review.featured),
-    images: Array.isArray(review.images) ? review.images : [],
-    ownerResponse: review.owner_response ?? null,
-    ownerRespondedAt: review.owner_responded_at ?? null,
-    helpfulCount: review.helpful_count ?? 0,
-    metadata: review.metadata
-      ? {
-          highlights: Array.isArray(review.metadata.highlights) ? review.metadata.highlights : undefined,
-          tags: Array.isArray(review.metadata.tags) ? review.metadata.tags : undefined,
-        }
-      : undefined,
-  }));
+  const mappedReviews: GuestFeedbackReview[] = (reviews ?? []).map((review) => {
+    const authorName = review.author_name ?? 'Guest';
+    const primaryImages = Array.isArray(review.images) ? review.images : [];
+    const isGoogleReview = typeof review.source === 'string' && review.source.toLowerCase().includes('google');
+    const rawPhotoCount =
+      typeof review.photo_count === 'number'
+        ? review.photo_count
+        : typeof review.photo_count === 'string'
+          ? Number.parseInt(review.photo_count, 10)
+          : 0;
+    const photoCount = Number.isFinite(rawPhotoCount) ? Math.max(rawPhotoCount, 0) : 0;
+    const expectsPhotos = Boolean(review.has_photos || photoCount > 0 || isGoogleReview);
+    const mergedImages = resolveReviewImages({
+      id: review.id,
+      authorName,
+      images: primaryImages,
+      expectsPhotos,
+      expectedCount: photoCount || undefined,
+    });
+
+    return {
+      id: review.id,
+      authorName,
+      rating: review.rating,
+      comment: review.comment ?? '',
+      publishedAt: review.published_at ?? new Date().toISOString(),
+      source: review.source ?? 'website',
+      verified: Boolean(review.verified),
+      featured: Boolean(review.featured),
+      images: mergedImages,
+      ownerResponse: review.owner_response ?? null,
+      ownerRespondedAt: review.owner_responded_at ?? null,
+      helpfulCount: review.helpful_count ?? 0,
+      metadata: review.metadata
+        ? {
+            highlights: Array.isArray(review.metadata.highlights) ? review.metadata.highlights : undefined,
+            tags: Array.isArray(review.metadata.tags) ? review.metadata.tags : undefined,
+          }
+        : undefined,
+    };
+  });
 
   const content: GuestFeedbackContent = {
     heading: {

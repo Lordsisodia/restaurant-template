@@ -6,6 +6,7 @@ import { ArticleCard } from '../../shared/components/ArticleCard';
 import FeaturedRow from '../../shared/components/FeaturedRow';
 import CategoryRow from '../../shared/components/CategoryRow';
 import type { ListingContent } from '../../types/schema';
+import { cn } from '@/lib/utils';
 
 export default function ListingPrimary({
   posts,
@@ -27,6 +28,10 @@ export default function ListingPrimary({
 
   const derivedFeatured = featuredPosts && featuredPosts.length > 0 ? featuredPosts : posts.slice(0, 4);
   const derivedCategories = categoryGroups ?? [];
+  const gridClassName = cn(
+    'mt-8 grid grid-cols-1 gap-8',
+    posts.length === 1 ? 'mx-auto max-w-xl place-items-center' : 'md:grid-cols-2 lg:grid-cols-3',
+  );
 
   return (
     <div className="bg-[#050505]">
@@ -41,13 +46,12 @@ export default function ListingPrimary({
       <section className="bg-[#050505] py-16">
         <div className="container mx-auto px-4">
           <SectionHeading
-            pillText="All Stories"
             title="All Stories"
             centered={false}
             as="h2"
             titleClassName="text-3xl font-semibold text-white"
           />
-          <div className="mt-8 grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
+          <div className={gridClassName}>
             {posts.map((post) => {
               const seconds = post.readTimeMinutes ? Math.ceil(post.readTimeMinutes * 60) : undefined;
               const published = new Date(post.publishedAt || post.createdAt);

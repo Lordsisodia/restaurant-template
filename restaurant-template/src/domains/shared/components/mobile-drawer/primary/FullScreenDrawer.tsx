@@ -153,14 +153,15 @@ export function FullScreenDrawer({
               {/* Top section - Just SVG logo + tagline */}
               <div className="animate-in fade-in slide-in-from-left-4 duration-500">
                 <div className="flex flex-col gap-2">
-                  {/* Draco SVG Logo - Balanced size */}
-                  <div className="w-full max-w-[200px]">
+                  {/* Draco logo - match footer lockup */}
+                  <div className="w-full max-w-[220px]">
                     <Image
-                      src="/images/tenants/draco/brand/logo/draco-logo.svg"
+                      src="/images/tenants/draco/brand/logo/draco-main-logo.svg"
                       alt={restaurantName}
-                      width={200}
-                      height={65}
+                      width={220}
+                      height={85}
                       className="w-full h-auto"
+                      priority
                     />
                   </div>
                   {/* Tagline below - properly aligned */}

@@ -20,7 +20,6 @@ export default function CategoryRow({ category, posts }: CategoryRowProps) {
       <div className="container mx-auto px-4">
         <div className="mb-4 flex items-center justify-between">
           <SectionHeading
-            pillText={category}
             title={category}
             centered={false}
             as="h2"

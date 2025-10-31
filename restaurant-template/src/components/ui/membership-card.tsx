@@ -29,7 +29,7 @@ interface MembershipCardProps {
   email?: string;
   avatar?: string;
   memberSince?: string;
-  tier?: "bronze" | "silver" | "gold" | "platinum" | "diamond";
+  tier?: "bronze" | "silver" | "gold" | "diamond";
   points?: number;
   nextTier?: string;
   pointsToNextTier?: number;
@@ -46,14 +46,13 @@ export const Component = ({
   memberSince = "March 2021",
   tier = "gold",
   points = 4250,
-  nextTier = "platinum",
+  nextTier = "diamond",
   pointsToNextTier = 750,
   benefits = [
-    "Priority customer support",
-    "Free shipping on all orders",
-    "Early access to new products",
-    "Exclusive member discounts",
-    "Birthday rewards",
+    "Cold brew flight after visit five",
+    "Chef pairing dinner invites",
+    "Priority latte art sessions",
+    "Birthday dessert for two",
   ],
   cardNumber = "•••• •••• •••• 5678",
   expiryDate = "09/25",
@@ -84,13 +83,6 @@ export const Component = ({
           border: "border-amber-100",
           gradient: "from-amber-500/20 to-amber-500/5",
         };
-      case "platinum":
-        return {
-          color: "text-slate-700",
-          bg: "bg-slate-50",
-          border: "border-slate-100",
-          gradient: "from-slate-700/20 to-slate-700/5",
-        };
       case "diamond":
         return {
           color: "text-sky-500",
@@ -109,13 +101,15 @@ export const Component = ({
   };
 
   const tierStyle = getTierStyle(tierState);
-  const progressToNextTier = (points / (points + pointsToNextTier)) * 100;
+  const progressToNextTier = pointsToNextTier <= 0
+    ? 100
+    : Math.min((points / (points + pointsToNextTier)) * 100, 100);
 
   return (
     <div className="w-full flex flex-col items-center">
       {/* Tier selector as colored dots */}
       <div className="flex gap-3 mb-6 flex-wrap justify-center">
-        {["bronze", "silver", "gold", "platinum", "diamond"].map((t) => {
+        {["bronze", "silver", "gold", "diamond"].map((t) => {
           const selected = t === tierState;
           const style = getTierStyle(t as MembershipCardProps["tier"]);
 
@@ -150,11 +144,13 @@ export const Component = ({
 
               <div>
                 <h3 className="font-semibold text-lg">{name}</h3>
-                <p className="text-sm text-muted-foreground">{email}</p>
-                <div className="flex items-center gap-1 mt-1 text-xs text-muted-foreground">
-                  <Calendar className="h-3.5 w-3.5" />
-                  <span>Member since {memberSince}</span>
-                </div>
+                {email ? <p className="text-sm text-muted-foreground">{email}</p> : null}
+                {memberSince ? (
+                  <div className="mt-1 flex items-center gap-1 text-xs text-muted-foreground">
+                    <Calendar className="h-3.5 w-3.5" />
+                    <span>Member since {memberSince}</span>
+                  </div>
+                ) : null}
               </div>
             </div>
 

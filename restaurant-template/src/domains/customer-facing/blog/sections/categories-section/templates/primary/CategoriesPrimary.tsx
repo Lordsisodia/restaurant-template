@@ -1,7 +1,6 @@
 'use client';
 
-import { Badge } from '@/domains/shared/components';
-import { cn } from '@/lib/utils';
+import { useId } from 'react';
 import type { CategoriesContent } from '../../types/schema';
 
 type CategoriesPrimaryProps = CategoriesContent & {
@@ -9,6 +8,8 @@ type CategoriesPrimaryProps = CategoriesContent & {
 };
 
 export default function CategoriesPrimary({ categories, activeCategoryKey = 'all', label = 'Filter by', onCategoryChange }: CategoriesPrimaryProps) {
+  const selectId = useId();
+
   const handleClick = (key: string) => {
     onCategoryChange?.(key);
   };
@@ -20,27 +21,31 @@ export default function CategoriesPrimary({ categories, activeCategoryKey = 'all
   return (
     <section className="border-y border-white/10 bg-black py-6 text-white">
       <div className="container mx-auto px-4">
-        <div className="flex flex-wrap items-center gap-3">
-          <span className="text-sm font-medium text-white/90">{label}</span>
-          {categories.map((category) => {
-            const isActive = activeCategoryKey === category.key;
-            const variant = isActive ? 'default' : 'outline';
-            return (
-              <button key={category.key} onClick={() => handleClick(category.key)} className="group" type="button">
-                <Badge
-                  variant={variant}
-                  className={cn(
-                    'cursor-pointer transition-all hover:scale-105',
-                    isActive ? 'bg-white text-black hover:bg-white/90 border-transparent' : 'border-white/40 text-white/90',
-                  )}
-                >
-                  {category.label}
-                  {typeof category.count === 'number' ? <span className="ml-2 text-[11px] text-white/60">{category.count}</span> : null}
-                  {category.pillText ? <span className="ml-2 text-[10px] uppercase tracking-[0.3em] text-white/50">{category.pillText}</span> : null}
-                </Badge>
-              </button>
-            );
-          })}
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <label htmlFor={selectId} className="text-sm font-medium uppercase tracking-[0.3em] text-white/70">
+            {label}
+          </label>
+          <div className="relative w-full sm:w-auto">
+            <select
+              id={selectId}
+              value={activeCategoryKey}
+              onChange={(event) => handleClick(event.target.value)}
+              className="w-full appearance-none rounded-full border border-white/20 bg-[#0b0b10] px-5 py-3 pr-10 text-sm font-semibold text-white shadow-[0_0_0_1px_rgba(255,255,255,0.05)] transition focus:border-white/40 focus:outline-none focus:ring-2 focus:ring-white/30"
+            >
+              {categories.map((category) => {
+                const countSuffix = typeof category.count === 'number' ? ` (${category.count})` : '';
+                return (
+                  <option key={category.key} value={category.key}>
+                    {category.label}
+                    {countSuffix}
+                  </option>
+                );
+              })}
+            </select>
+            <span className="pointer-events-none absolute inset-y-0 right-4 flex items-center text-white/50">
+              ▾
+            </span>
+          </div>
         </div>
       </div>
     </section>

@@ -14,7 +14,8 @@ Use this living document to capture and resolve feedback specific to the about u
 
 | Date (YYYY-MM-DD) | Source / Owner | Summary | Status | Notes |
 | --- | --- | --- | --- | --- |
-| 2025-10-28 | _example_ | Outline request here | new | |
+| 2025-10-31 | Client voice transcript | Replace placeholder "Our Story" imagery with curated, on-brand venue photos | new | Coordinate shoot / selects from client asset library |
+| 2025-10-31 | Client voice transcript | Ensure Instagram strip surfaces the correct handle with fresh imagery | new | Sync handle + photo feed with marketing content |
 
 ## Resolved Items
 

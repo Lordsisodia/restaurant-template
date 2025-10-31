@@ -7,7 +7,6 @@ import { ValuesRenderer } from '../sections/values-section';
 import { VenueGalleryRenderer } from '../sections/venue-gallery-section';
 import { LocationRenderer } from '../sections/location-section';
 import { FaqRenderer } from '../sections/faq-section';
-import { CtaRenderer } from '../sections/cta-section';
 import type { HeroContent, HeroVariant } from '../sections/hero-section';
 import type {
   CuisinePhilosophyContent,
@@ -15,7 +14,6 @@ import type {
 } from '../sections/cuisine-philosophy-section';
 import type { AwardsContent, AwardsVariant } from '../sections/awards-section';
 import type { StoryContent, StoryVariant } from '../sections/story-section';
-import type { CtaContent, CtaVariant } from '../sections/cta-section';
 import type { TeamContent, TeamVariant } from '../sections/team-section';
 import type { ValuesContent, ValuesVariant } from '../sections/values-section';
 import type { VenueGalleryContent, VenueGalleryVariant } from '../sections/venue-gallery-section';
@@ -33,8 +31,6 @@ export interface AboutPageData {
   awardsVariant?: AwardsVariant;
   story: StoryContent;
   storyVariant?: StoryVariant;
-  cta: CtaContent;
-  ctaVariant?: CtaVariant;
   team: TeamContent;
   teamVariant?: TeamVariant;
   values: ValuesContent;
@@ -64,17 +60,6 @@ export default function AboutPage({ data }: AboutPageProps) {
       {/* Venue Gallery */}
       <VenueGalleryRenderer variant={data.venueGalleryVariant} content={data.venueGallery} />
 
-      {/* Intro Paragraph - Optional */}
-      <section className="bg-background px-6 pt-6 pb-12">
-        <div className="mx-auto max-w-4xl text-center">
-          <p className="text-lg leading-relaxed text-muted-foreground">
-            Since opening our doors, Draco Coffee and Eatery has been serving Bali’s boldest coffee 
-            and most authentic flavors. From our signature Nasi Bakar to expertly crafted espresso, 
-            every dish tells a story of passion, tradition, and community.
-          </p>
-        </div>
-      </section>
-
       {/* Our Story Timeline */}
       <StoryRenderer variant={data.storyVariant} content={data.story} />
 
@@ -89,9 +74,6 @@ export default function AboutPage({ data }: AboutPageProps) {
 
       {/* Values & Mission */}
       <ValuesRenderer variant={data.valuesVariant} content={data.values} />
-
-      {/* Call To Action */}
-      <CtaRenderer variant={data.ctaVariant} content={data.cta} />
 
       {/* Location & Contact - NEW */}
       <LocationRenderer variant={data.locationVariant} content={data.location} />

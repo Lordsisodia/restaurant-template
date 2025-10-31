@@ -24,12 +24,12 @@ export default function VenueGalleryTemplate2(content: VenueGalleryContent) {
   }, [images, showCategories]);
 
   return (
-    <section className="relative overflow-hidden bg-black">
-      <div className="absolute inset-0 bg-gradient-to-br from-primary/30 via-transparent to-black/60" />
+    <section className="relative overflow-hidden bg-neutral-950">
+      <div className="absolute inset-0 bg-gradient-to-br from-black/70 via-black/40 to-black/80" />
       <div className="relative mx-auto flex w-full max-w-6xl flex-col gap-6 px-6 pt-16 pb-10 lg:flex-row lg:items-center lg:gap-10">
-        <div className="w-full space-y-4 text-white lg:max-w-sm">
+        <div className="w-full space-y-3 text-white lg:max-w-sm">
           <SectionHeading
-            pillText={pillText ?? 'Inside Draco'}
+            pillText={pillText}
             title={title}
             subtitle={subtitle ?? intro}
             titleClassName="text-3xl md:text-4xl font-semibold"
@@ -60,7 +60,7 @@ export default function VenueGalleryTemplate2(content: VenueGalleryContent) {
         </div>
 
         <div className="w-full overflow-hidden rounded-[32px] lg:rounded-[36px]">
-          <ImageAutoSlider images={sliderImages} className="min-h-[55vh]" title={title} showTitlePill />
+          <ImageAutoSlider images={sliderImages} className="min-h-[55vh]" title={title} showTitlePill={false} />
         </div>
       </div>
     </section>

@@ -10,6 +10,7 @@ import { MenuRenderer } from './sections/menu-section';
 import { StoryRenderer } from './sections/story-section';
 import { MapRenderer } from './sections/map-section';
 import { CtaRenderer } from './sections/cta-section';
+import { PromoRenderer, type PromoVariant } from './sections/promo-section';
 import { SpecialsRenderer } from './sections/specials-section';
 import { InstagramRenderer } from './sections/instagram-section';
 import { GalleryRenderer } from './sections/gallery-section';
@@ -25,11 +26,19 @@ export default async function LandingPage() {
   // Config objects - declare early
   const heroConfig = (features.hero as Record<string, any> | undefined) ?? {};
   const reviewConfig = (features.reviews as Record<string, any> | undefined) ?? {};
+  const promoConfig = (features.promo as Record<string, any> | undefined) ?? {};
   const deliveryPartners = (features.delivery as Record<string, any> | undefined)?.partners ?? [];
   const deliveryPartnerList = Array.isArray(deliveryPartners) ? deliveryPartners : [];
 
   const heroImage: string = brand.heroUrl || brand.hero || 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=1920&q=80';
   const heroImages: string[] | undefined = Array.isArray(heroConfig.images) ? heroConfig.images : undefined;
+  const resolvedHeroVariant: HeroVariant = (() => {
+    const requested = heroConfig.variant as HeroVariant | undefined;
+    if (!requested || requested === 'gradient-words') {
+      return 'split-left';
+    }
+    return requested;
+  })();
   const heroLogo: string | undefined = heroConfig.logoUrl || brand.heroLogoUrl;
   const galleryConfig = (features.gallery as Record<string, any> | undefined) ?? {};
   const defaultGalleryImages = [
@@ -218,6 +227,25 @@ export default async function LandingPage() {
   // Delivery platform link (TODO: Configure in siteConfig)
   const deliveryLink = (features.delivery as any)?.deepLink || undefined;
 
+  const promoContent = {
+    pillText: promoConfig.pillText ?? 'Limited Time',
+    eyebrow: promoConfig.eyebrow ?? 'Weekend Spotlight',
+    title: promoConfig.title ?? 'Sunset Espresso Sessions',
+    description:
+      promoConfig.description ??
+      'DJ-curated sets, signature cocktails, and wood-fired bites every Friday and Saturday evening.',
+    schedule: promoConfig.schedule ?? 'Fridays & Saturdays · 5:00 PM – Late',
+    imageUrl:
+      promoConfig.imageUrl ??
+      'https://images.unsplash.com/photo-1544145945-f90425340c7e?w=900&q=80',
+    imageAlt: promoConfig.imageAlt ?? 'Signature espresso cocktail garnished with citrus peel',
+    badge: promoConfig.badge ?? 'New',
+    ctaLabel: promoConfig.ctaLabel ?? 'See Promotions',
+    ctaHref: promoConfig.ctaHref ?? '/promotions',
+    secondaryCtaLabel: promoConfig.secondaryCtaLabel ?? (waDigits ? 'Book via WhatsApp' : undefined),
+    secondaryCtaHref: promoConfig.secondaryCtaHref ?? (waDigits ? `https://wa.me/${waDigits}` : undefined),
+  };
+
   // Story config (TODO: Configure in siteConfig)
   const storyConfig = (features.story as any) || {};
   const storyEnabled = storyConfig.enabled !== false; // Default to true
@@ -304,20 +332,24 @@ export default async function LandingPage() {
     <div>
       {/* 1. HERO SECTION - Emotional impact */}
       <HeroRenderer
-        variant={(heroConfig.variant as HeroVariant) || 'primary'}
+        variant={resolvedHeroVariant}
         content={{
-          title: tenant.displayName,
-          subtitle: heroConfig.subtitle as string | undefined,
+          title: (heroConfig.title as string | undefined) ?? 'Fuel Your Day, Stay for the Night',
+          subtitle:
+            (heroConfig.subtitle as string | undefined) ??
+            'Daily-roasted espresso, wood-fired signatures, and late-night vibes at Draco Coffee & Eatery.',
           imageUrl: heroImage,
           images: heroImages,
           logoUrl: heroLogo,
           primaryCta: { label: 'Order Now', href: deliveryLink || '/menu' },
           secondaryCta: { label: 'View Menu', href: '/menu' },
-          words: Array.isArray(heroConfig.words) && heroConfig.words.length === 3 ? (heroConfig.words as [string, string, string]) : undefined,
           videoUrl: heroConfig.videoUrl as string | undefined,
           useAnimatedHeadline: heroConfig.useAnimatedHeadline as boolean | undefined,
         }}
       />
+
+      {/* 1.5 PROMO SPOTLIGHT - Limited-time event */}
+      <PromoRenderer variant={(promoConfig.variant as PromoVariant | undefined) ?? 'primary'} content={promoContent} />
 
       {/* 2. STICKY CTA BAR - DISABLED (User didn't like it) */}
       {/* <CtaRenderer
@@ -344,6 +376,10 @@ export default async function LandingPage() {
           whatsapp,
           phone,
           partners: deliveryPartnerList,
+          membershipHref:
+            ((features.membership as Record<string, any> | undefined)?.ctaHref as string | undefined) ?? '/membership',
+          membershipLabel:
+            ((features.membership as Record<string, any> | undefined)?.ctaLabel as string | undefined) ?? 'Join Membership',
         }}
       />
 

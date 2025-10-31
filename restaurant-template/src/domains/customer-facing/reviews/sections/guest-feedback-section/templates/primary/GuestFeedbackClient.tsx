@@ -1,14 +1,15 @@
 "use client";
 
 import { useState } from 'react';
-import { SectionHeading } from '@/domains/shared/components';
 import type { GuestFeedbackContent } from '../../types';
+import { SectionHeading } from '@/domains/shared/components';
 import { RatingsSummaryPrimary } from '@/domains/customer-facing/reviews/sections/ratings-summary/templates/primary';
 import { FilterBarPrimary } from '@/domains/customer-facing/reviews/sections/filter-bar/templates/primary';
 import { ReviewsGridPrimary } from '@/domains/customer-facing/reviews/sections/reviews-grid/templates/primary';
 import { AddReviewModalPrimary } from '@/domains/customer-facing/reviews/sections/add-review-modal/templates/primary';
 import { FloatingAddReviewButton } from '@/domains/customer-facing/reviews/shared/components/FloatingAddReviewButton';
 import { WriteReviewButton } from '@/domains/customer-facing/reviews/shared/components/WriteReviewButton';
+import { reviewLinks, REVIEW_REWARD_COPY } from '@/domains/customer-facing/reviews/shared/config/review-links';
 
 interface GuestFeedbackClientProps {
   content: GuestFeedbackContent;
@@ -17,6 +18,7 @@ interface GuestFeedbackClientProps {
 export function GuestFeedbackClient({ content }: GuestFeedbackClientProps) {
   const { heading, stats, featuredTags, filters, reviews, viewer } = content;
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const primaryReviewUrl = reviewLinks.googleWriteReviewUrl ?? reviewLinks.googleReviewsUrl;
 
   const handleSubmitReview = async (data: { rating: number; comment: string }) => {
     console.info('[reviews] submitReview placeholder', data);
@@ -43,7 +45,13 @@ export function GuestFeedbackClient({ content }: GuestFeedbackClientProps) {
           <div className="mb-8">
             <RatingsSummaryPrimary
               content={{ stats, featuredTags }}
-              actionSlot={<WriteReviewButton onClick={() => setIsModalOpen(true)} />}
+              actionSlot={
+                <WriteReviewButton
+                  googleUrl={primaryReviewUrl}
+                  onFallback={() => setIsModalOpen(true)}
+                  note={REVIEW_REWARD_COPY}
+                />
+              }
             />
           </div>
 

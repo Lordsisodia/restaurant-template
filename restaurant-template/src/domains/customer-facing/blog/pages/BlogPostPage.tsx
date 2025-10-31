@@ -5,6 +5,7 @@
  */
 
 import Link from 'next/link';
+import { SectionHeading } from '@/domains/shared/components';
 import type { PostContent } from '../sections/post-section';
 import { PostRenderer } from '../sections/post-section';
 
@@ -40,6 +41,14 @@ export default function BlogPostPage({ post, tenant }: BlogPostPageProps) {
     backLinkLabel: '← Back to blog',
   };
 
+  const siteName =
+    typeof tenant?.displayName === 'string' && tenant.displayName.trim().length > 0
+      ? tenant.displayName.trim()
+      : 'our team';
+  const customCtaSubtitle =
+    typeof tenant?.blogEnjoyedCtaSubtitle === 'string' ? tenant.blogEnjoyedCtaSubtitle.trim() : '';
+  const ctaSubtitle = customCtaSubtitle || `Visit ${siteName} and experience it yourself.`;
+
   return (
     <main className="bg-[#050505] text-white">
       <PostRenderer content={postContent} variant="primary" />
@@ -47,11 +56,15 @@ export default function BlogPostPage({ post, tenant }: BlogPostPageProps) {
       {/* Footer CTA */}
       <section className="border-t border-white/10 bg-[#040404] py-16 text-center">
         <div className="container mx-auto max-w-4xl px-4">
-          <h2 className="mb-4 text-3xl font-bold text-white">Enjoyed this story?</h2>
-          <p className="mb-8 text-lg text-white/70">
-            Visit {tenant?.displayName || 'us'} and experience it yourself.
-          </p>
-          <div className="flex flex-wrap justify-center gap-4">
+          <SectionHeading
+            pillText="Next Steps"
+            title="Enjoyed this story?"
+            subtitle={ctaSubtitle}
+            centered
+            className="mx-auto max-w-2xl text-center"
+            titleClassName="text-3xl sm:text-4xl font-bold text-white"
+          />
+          <div className="mt-8 flex flex-wrap justify-center gap-4">
             <Link
               href="/menu"
               className="inline-flex items-center justify-center rounded-full bg-white px-8 py-3 text-base font-semibold text-black transition-colors hover:bg-white/90"

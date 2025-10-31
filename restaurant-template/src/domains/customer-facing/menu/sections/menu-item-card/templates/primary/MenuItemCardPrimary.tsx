@@ -83,6 +83,13 @@ export default function MenuItemCardPrimary({
 
   const image = imageUrl ?? getMenuItemImage(fallbackItem, 'card');
 
+  const statusPills = [
+    popularScore != null && popularScore >= 90
+      ? { label: 'Best Seller', highlight: true }
+      : null,
+    ...(badges ?? []).map((badge) => ({ label: badge, highlight: false })),
+  ].filter(Boolean) as Array<{ label: string; highlight: boolean }>;
+
   const dietaryBadges = [
     isSpicy ? { icon: <Flame className="w-3.5 h-3.5 text-red-400" />, label: 'Spicy' } : null,
     isVegetarian && !isVegan ? { label: 'Vegetarian' } : null,
@@ -123,7 +130,7 @@ export default function MenuItemCardPrimary({
 
   return (
     <div
-      className="group relative flex h-full w-full cursor-pointer flex-col overflow-hidden rounded-3xl border border-white/15 bg-white/5 text-white shadow-[0_20px_60px_rgba(0,0,0,0.45)] backdrop-blur-2xl transition-transform duration-300 hover:-translate-y-1 hover:shadow-[0_28px_80px_rgba(255,152,56,0.35)]"
+      className="group relative flex h-full w-full cursor-pointer flex-col overflow-hidden rounded-3xl border border-white/12 bg-white/[0.04] text-white shadow-[0_20px_60px_rgba(0,0,0,0.45)] backdrop-blur-2xl transition-transform duration-300 hover:-translate-y-1 hover:shadow-[0_28px_80px_rgba(255,152,56,0.25)]"
       onClick={handleSelect}
       role="button"
       tabIndex={0}
@@ -134,7 +141,27 @@ export default function MenuItemCardPrimary({
         }
       }}
     >
-      <div className="relative h-[240px] w-full overflow-hidden">
+      <div className="flex items-center justify-between px-5 pt-5">
+        <span className="text-xs font-semibold uppercase tracking-[0.24em] text-white/55">
+          {category ?? 'Menu'}
+        </span>
+        {statusPills.length > 0 ? (
+          <div className="flex items-center gap-2">
+            {statusPills.map(({ label, highlight }) => (
+              <Badge
+                key={label}
+                className={highlight
+                  ? 'border border-amber-200/70 bg-amber-400/90 text-[11px] font-semibold text-black'
+                  : 'border border-white/15 bg-white/12 text-[11px] text-white/85'}
+              >
+                {label}
+              </Badge>
+            ))}
+          </div>
+        ) : null}
+      </div>
+
+      <div className="relative mt-4 h-[240px] w-full overflow-hidden">
         <Image
           src={image}
           alt={name}
@@ -145,24 +172,6 @@ export default function MenuItemCardPrimary({
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-transparent" />
         <div className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-black/90 via-black/60 to-transparent" />
-
-        <div className="absolute top-3 left-3 flex flex-col gap-1.5">
-          {category ? (
-            <Badge className="flex items-center gap-1.5 bg-white/10 backdrop-blur-md border-white/20 text-white text-xs px-2.5 py-1 shadow-lg">
-              {category}
-            </Badge>
-          ) : null}
-          {popularScore != null && popularScore >= 90 ? (
-            <Badge className="bg-amber-500/90 text-black font-semibold border border-white/20 text-[10px] px-2 py-0.5 shadow-lg">
-              Best Seller
-            </Badge>
-          ) : null}
-          {(badges ?? []).slice(0, 2).map((badge) => (
-            <Badge key={badge} className="bg-white/15 border-white/20 text-[10px] text-white">
-              {badge}
-            </Badge>
-          ))}
-        </div>
 
         <div className="absolute top-3 right-3 flex gap-1.5">
           {isSpicy ? (
@@ -182,28 +191,29 @@ export default function MenuItemCardPrimary({
           ) : null}
         </div>
 
-        <div className="absolute bottom-0 left-0 right-0 p-4">
-          <h3 className="text-lg font-semibold drop-shadow-lg line-clamp-2">{name}</h3>
-          {description ? (
-            <p className="mt-1 text-xs text-gray-300 line-clamp-2">
-              {description}
-            </p>
-          ) : null}
-        </div>
       </div>
 
-      <div className="space-y-3 border-t border-white/10 bg-white/[0.03] p-5">
-        <div className="flex items-center justify-between">
-          <div className="text-xl font-semibold bg-gradient-to-r from-orange-300 via-amber-300 to-yellow-200 bg-clip-text text-transparent">
+      <div className="space-y-3 border-t border-white/10 bg-white/[0.05] p-5">
+        <div className="flex items-start justify-between gap-4">
+          <div className="space-y-1">
+            <h3 className="text-base font-semibold text-white/95">{name}</h3>
+            {description ? (
+              <p className="text-xs text-white/60 line-clamp-2">
+                {description}
+              </p>
+            ) : null}
+          </div>
+          <div className="shrink-0 text-lg font-semibold text-white/90">
             {formatPrice(price, currency)}
           </div>
-          {prepTimeMin != null ? (
-            <div className="flex items-center gap-1 text-xs text-gray-300">
-              <Clock className="h-3.5 w-3.5 text-gray-400" />
-              <span>{prepTimeMin} min</span>
-            </div>
-          ) : null}
         </div>
+
+        {prepTimeMin != null ? (
+          <div className="flex items-center gap-1 text-xs text-gray-300">
+            <Clock className="h-3.5 w-3.5 text-gray-400" />
+            <span>{prepTimeMin} min</span>
+          </div>
+        ) : null}
 
         {dietaryBadges.length > 0 ? (
           <div className="flex flex-wrap gap-1.5">

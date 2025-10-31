@@ -52,9 +52,8 @@ export default function BlogPage({ posts, tenant, categories = [] }: BlogPagePro
 
   const heroContent: HeroContent = useMemo(() => {
     const heroTitle = (tenant?.blogHeroTitle ?? '').trim() || 'Our Stories';
-    const heroSubtitle =
-      (tenant?.blogHeroSubtitle ?? '').trim() ||
-      "Sip the latest from Draco Coffee & Eatery—menu drops, events, and community stories we think you'll love.";
+    const rawSubtitle = (tenant?.blogHeroSubtitle ?? '').trim();
+    const heroSubtitle = rawSubtitle.length > 0 ? rawSubtitle : undefined;
     return {
       pillText: 'Blog',
       title: heroTitle,
@@ -62,10 +61,6 @@ export default function BlogPage({ posts, tenant, categories = [] }: BlogPagePro
       backgroundImageUrl: tenant?.blogHeroImageUrl ?? '/images/shared/defaults/hero-default.jpg',
     };
   }, [tenant]);
-
-  const introCopy =
-    (tenant?.blogIntro ?? '').trim() ||
-    "From Denpasar cafe culture to behind-the-bar craft, Our Stories is where Draco Coffee & Eatery shares the notes, people, and flavors reshaping each service.";
 
   const categoriesContent: CategoriesContent = useMemo(() => {
     const counts = new Map<string, number>();
@@ -118,13 +113,6 @@ export default function BlogPage({ posts, tenant, categories = [] }: BlogPagePro
   return (
     <main className="min-h-screen bg-[#050505] text-white">
       <HeroRenderer content={heroContent} variant="primary" />
-      <section className="border-b border-white/10 bg-[#050505] py-10">
-        <div className="container mx-auto px-4">
-          <p className="max-w-3xl text-lg leading-relaxed text-white/75">
-            {introCopy}
-          </p>
-        </div>
-      </section>
       <CategoriesRenderer
         content={categoriesContent}
         onCategoryChange={(categoryKey) => setActiveCategory(categoryKey)}
