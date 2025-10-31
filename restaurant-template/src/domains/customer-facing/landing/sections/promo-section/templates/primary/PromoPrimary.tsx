@@ -117,7 +117,7 @@ export default function PromoPrimary({
   const promotionEntries = promotions && promotions.length > 0 ? promotions : DEFAULT_PROMOTIONS;
 
   return (
-    <section className="relative mx-auto w-full max-w-6xl overflow-hidden rounded-3xl border border-border/60 bg-background/95 px-6 pb-12 pt-16 shadow-xl shadow-primary/10">
+    <section className="relative mx-auto w-full max-w-6xl overflow-hidden rounded-3xl border border-border/60 bg-background/95 px-4 pb-12 pt-14 shadow-xl shadow-primary/10 sm:px-6 sm:pt-16">
       <div className="flex flex-col gap-8 lg:flex-row lg:items-center">
         <div className="flex-1 space-y-8">
           <div className="flex flex-wrap items-center gap-2 text-left">
@@ -168,11 +168,11 @@ export default function PromoPrimary({
         </div>
 
         <div className="overflow-x-auto pb-2">
-          <div className="flex snap-x snap-mandatory gap-4 [&::-webkit-scrollbar]:hidden">
+          <div className="flex snap-x snap-mandatory gap-4 pl-1 pr-4 sm:pl-2 sm:pr-6 [&::-webkit-scrollbar]:hidden">
             {promotionEntries.map((promo, idx) => (
               <article
                 key={`${promo.day}-${promo.title}-${idx}`}
-                className="group relative flex w-[280px] flex-shrink-0 snap-start flex-col overflow-hidden rounded-2xl border border-border/60 bg-card/90 shadow-sm transition hover:border-primary/40 hover:shadow-lg sm:w-[320px]"
+                className="group relative flex w-[240px] flex-shrink-0 snap-start flex-col overflow-hidden rounded-2xl border border-border/60 bg-card/90 shadow-sm transition hover:border-primary/40 hover:shadow-lg sm:w-[280px] md:w-[320px]"
               >
                 {promo.imageUrl ? (
                   <div className="relative aspect-[4/3] w-full overflow-hidden">

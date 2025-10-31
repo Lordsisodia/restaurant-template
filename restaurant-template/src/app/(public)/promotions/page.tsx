@@ -15,13 +15,13 @@ import PromoPrimary from '@/domains/customer-facing/landing/sections/promo-secti
 import type { PromoContent } from '@/domains/customer-facing/landing/sections/promo-section/types/schema';
 
 export const metadata: Metadata = {
-  title: 'Promotions Bay | Draco Coffee & Eatery',
+  title: 'Promotions | Draco Coffee & Eatery',
   description:
     'Explore the latest line-up of events, tastings, and limited-time offers happening at Draco Coffee & Eatery.',
 };
 
 const WEEKLY_LINEUP: PromoContent = {
-  pillText: 'Promotions Bay',
+  pillText: 'Promotions',
   eyebrow: 'Updated October 31, 2025',
   title: 'This Week at Draco',
   description:
@@ -162,16 +162,16 @@ export default function PromotionsPage() {
           <div className="relative z-10 grid gap-12 lg:grid-cols-[1.1fr,0.9fr] lg:items-center">
             <div className="space-y-8">
               <SectionHeading
-                pillText="Promotions Bay"
+                pillText="Promotions"
                 pillTone="light"
                 title="Events, drops, and late-night energy — refreshed every Friday."
                 subtitle="Expect premium coffee activations, chef collaborations, and sonic takeovers. We publish the full calendar every Friday at 10:00 AM and share member-only drops through the concierge channel."
                 centered={false}
-                titleClassName="text-3xl font-semibold tracking-tight md:text-4xl"
-                className="text-left text-white"
+                titleClassName="text-2xl font-semibold leading-tight md:text-4xl"
+                className="text-left text-white max-w-xl"
               />
 
-              <div className="grid gap-4 text-sm font-medium uppercase tracking-[0.18em] text-white/70 sm:grid-cols-3">
+              <div className="grid gap-4 text-xs font-medium uppercase tracking-[0.18em] text-white/70 sm:grid-cols-3 sm:text-sm">
                 <Badge variant="outline" className="border-white/40 bg-white/10 text-white/80 backdrop-blur">
                   Live Lineup · 4 anchors
                 </Badge>
@@ -231,8 +231,8 @@ export default function PromotionsPage() {
             title="Signature series to plan around"
             subtitle="Anchor happenings that define the Draco experience. Expect seasonal tweaks, surprise collaborators, and dedicated spaces for each program."
             centered={false}
-            titleClassName="text-3xl font-semibold md:text-4xl"
-            className="text-left"
+            titleClassName="text-2xl font-semibold leading-tight md:text-4xl"
+            className="text-left max-w-3xl"
           />
 
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
@@ -254,7 +254,7 @@ export default function PromotionsPage() {
                   <Badge variant="outline" className="w-fit uppercase tracking-[0.2em] text-[10px] text-muted-foreground">
                     {collection.eyebrow}
                   </Badge>
-                  <CardTitle className="text-2xl font-semibold">{collection.title}</CardTitle>
+                  <CardTitle className="text-xl font-semibold md:text-2xl">{collection.title}</CardTitle>
                   <CardDescription className="text-sm leading-relaxed">{collection.description}</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-3">
@@ -285,8 +285,8 @@ export default function PromotionsPage() {
             title="Unlock elevated access with Draco Membership"
             subtitle="Members enjoy tiered perks that move with you — from double points to concierge experiences and private RSVP windows."
             centered={false}
-            titleClassName="text-3xl font-semibold md:text-4xl"
-            className="text-left"
+            titleClassName="text-2xl font-semibold leading-tight md:text-4xl"
+            className="text-left max-w-3xl"
           />
 
           <div className="grid gap-6 lg:grid-cols-[1.1fr,0.9fr]">
@@ -295,7 +295,7 @@ export default function PromotionsPage() {
                 <Badge variant="outline" className="w-fit uppercase tracking-[0.2em] text-[10px] text-muted-foreground">
                   Benefits snapshot
                 </Badge>
-                <CardTitle className="text-2xl font-semibold">What membership layers onto Promotions Bay</CardTitle>
+                <CardTitle className="text-xl font-semibold md:text-2xl">What membership layers onto Promotions</CardTitle>
                 <CardDescription className="text-sm leading-relaxed">
                   Every Promotion Bay drop carries an extra perk for members. Present your digital membership card on arrival
                   to unlock the below layers instantly.
@@ -329,7 +329,7 @@ export default function PromotionsPage() {
                 <Badge variant="outline" className="w-fit border-primary/60 bg-primary/10 text-primary">
                   Concierge spotlight
                 </Badge>
-                <CardTitle className="text-2xl font-semibold text-primary">
+                <CardTitle className="text-xl font-semibold text-primary md:text-2xl">
                   Concierge-crafted experiences
                 </CardTitle>
                 <CardDescription className="text-sm leading-relaxed text-primary/90">
@@ -370,8 +370,8 @@ export default function PromotionsPage() {
             title="Secure your spot"
             subtitle="Choose the channel that suits you. We reply within 30 minutes during operating hours."
             centered={false}
-            titleClassName="text-2xl font-semibold md:text-3xl"
-            className="text-left"
+            titleClassName="text-xl font-semibold leading-tight md:text-3xl"
+            className="text-left max-w-2xl"
           />
 
           <div className="grid gap-6 md:grid-cols-3">

@@ -1,4 +1,5 @@
 import PostHeader from '../../shared/components/PostHeader';
+import styles from './PostPrimary.module.css';
 import type { PostContent } from '../../types/schema';
 import { convertPlainTextToHtml, htmlEscape } from './markdown';
 
@@ -158,7 +159,7 @@ export default function PostPrimary(post: PostContent) {
   return (
     <article className="relative isolate bg-[#050505] text-white">
       <div className="absolute inset-x-0 top-0 -z-10 h-64 bg-gradient-to-b from-white/[0.05] via-transparent to-transparent" />
-      <div className="mx-auto grid w-full max-w-6xl grid-cols-1 gap-12 px-4 py-16 lg:grid-cols-[minmax(0,2.6fr)_minmax(0,1fr)] lg:px-8">
+      <div className="mx-auto grid w-full max-w-6xl grid-cols-1 gap-12 px-4 pt-28 pb-16 sm:pt-32 lg:grid-cols-[minmax(0,2.6fr)_minmax(0,1fr)] lg:px-8 lg:pt-36">
         <div>
           <PostHeader post={post} />
 
@@ -169,10 +170,7 @@ export default function PostPrimary(post: PostContent) {
           ) : null}
 
           {post.content ? (
-            <div
-              className="prose prose-lg prose-invert max-w-none text-white/80 prose-headings:font-semibold prose-headings:text-white prose-h2:mt-12 prose-h2:mb-6 prose-h2:text-3xl prose-h2:tracking-tight prose-h3:mt-10 prose-h3:mb-4 prose-h3:text-2xl prose-h4:mt-8 prose-h4:mb-3 prose-h4:text-xl prose-p:mb-6 prose-p:leading-8 prose-strong:text-white prose-em:text-white/80 prose-ul:my-6 prose-ul:list-disc prose-ul:ml-6 prose-ol:my-6 prose-ol:list-decimal prose-ol:ml-6 prose-li:leading-relaxed prose-li:marker:text-amber-300 prose-a:text-amber-300 prose-a:no-underline hover:prose-a:text-amber-200 prose-code:rounded prose-code:bg-white/10 prose-code:px-1.5 prose-code:py-0.5 prose-pre:bg-[#0f0f15] prose-pre:border prose-pre:border-white/10 prose-pre:text-sm prose-pre:text-white prose-img:rounded-3xl prose-img:border prose-img:border-white/10 prose-img:shadow-xl prose-figcaption:text-sm prose-figcaption:text-white/60 prose-blockquote:border-l-4 prose-blockquote:border-amber-400/60 prose-blockquote:pl-6 prose-blockquote:text-white/70 prose-hr:my-12 prose-hr:border-white/20"
-              dangerouslySetInnerHTML={{ __html: richHtml || body }}
-            />
+            <div className={styles.postBody} dangerouslySetInnerHTML={{ __html: richHtml || body }} />
           ) : (
             <p className="mt-6 text-base text-white/70">Content coming soon.</p>
           )}

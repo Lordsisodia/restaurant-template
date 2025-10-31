@@ -24,18 +24,30 @@ import {
   Zap,
 } from "lucide-react";
 
+type TierKey = "bronze" | "silver" | "gold" | "diamond";
+
+interface MembershipTierDetail {
+  points: number;
+  nextTier?: TierKey | null;
+  nextTierLabel?: string;
+  pointsToNextTier?: number;
+  benefits: string[];
+  cardBackground?: string;
+}
+
 interface MembershipCardProps {
   name?: string;
   email?: string;
   avatar?: string;
   memberSince?: string;
-  tier?: "bronze" | "silver" | "gold" | "diamond";
+  tier?: TierKey;
   points?: number;
   nextTier?: string;
   pointsToNextTier?: number;
   benefits?: string[];
   cardNumber?: string;
   expiryDate?: string;
+  tierDetails?: Record<TierKey, MembershipTierDetail>;
 }
 
 
@@ -56,9 +68,11 @@ export const Component = ({
   ],
   cardNumber = "•••• •••• •••• 5678",
   expiryDate = "09/25",
+  tierDetails,
 }: MembershipCardProps) => {
   const [isHovered, setIsHovered] = useState(false);
   const [tierState, setTierState] = useState<MembershipCardProps["tier"]>(tier);
+  const [hasInteracted, setHasInteracted] = useState(false);
 
   const getTierStyle = (tier: MembershipCardProps["tier"]) => {
     switch (tier) {
@@ -67,56 +81,92 @@ export const Component = ({
           color: "text-amber-700",
           bg: "bg-amber-100",
           border: "border-amber-200",
-          gradient: "from-amber-700/20 to-amber-700/5",
+          gradient: "from-amber-500/40 via-amber-400/20 to-amber-200/10",
+          cardBackground: "bg-gradient-to-br from-amber-900/30 via-amber-800/20 to-amber-600/20",
         };
       case "silver":
         return {
           color: "text-slate-500",
           bg: "bg-slate-100",
           border: "border-slate-200",
-          gradient: "from-slate-400/20 to-slate-400/5",
+          gradient: "from-slate-400/40 via-slate-300/20 to-slate-200/10",
+          cardBackground: "bg-gradient-to-br from-slate-900/30 via-slate-700/20 to-slate-500/20",
         };
       case "gold":
         return {
           color: "text-amber-500",
           bg: "bg-amber-50",
           border: "border-amber-100",
-          gradient: "from-amber-500/20 to-amber-500/5",
+          gradient: "from-amber-400/40 via-amber-300/20 to-amber-200/10",
+          cardBackground: "bg-gradient-to-br from-yellow-900/25 via-amber-700/20 to-yellow-500/20",
         };
       case "diamond":
         return {
           color: "text-sky-500",
           bg: "bg-sky-50",
           border: "border-sky-100",
-          gradient: "from-sky-500/20 to-sky-500/5",
+          gradient: "from-sky-500/40 via-sky-400/20 to-sky-200/10",
+          cardBackground: "bg-gradient-to-br from-sky-900/30 via-sky-700/20 to-emerald-500/20",
         };
       default:
         return {
           color: "text-amber-500",
           bg: "bg-amber-50",
           border: "border-amber-100",
-          gradient: "from-amber-500/20 to-amber-500/5",
+          gradient: "from-amber-500/40 via-amber-300/20 to-amber-200/10",
+          cardBackground: "bg-gradient-to-br from-amber-900/30 via-amber-800/20 to-amber-600/20",
         };
     }
   };
+  const tierKeys: TierKey[] = ["bronze", "silver", "gold", "diamond"];
 
   const tierStyle = getTierStyle(tierState);
-  const progressToNextTier = pointsToNextTier <= 0
+  const configuredTier = hasInteracted && tierDetails ? tierDetails[tierState as TierKey] : undefined;
+
+  const displayPoints = configuredTier?.points ?? points ?? 0;
+  const displayBenefits = configuredTier?.benefits ?? benefits;
+
+  const configuredNextTierKey = configuredTier?.nextTier ?? null;
+  const configuredNextTierLabel = configuredTier?.nextTierLabel;
+  const configuredPointsToNextTier = configuredTier?.pointsToNextTier ?? 0;
+
+  const displayNextTierLabel =
+    configuredTier
+      ? configuredNextTierLabel ??
+        (configuredNextTierKey ? configuredNextTierKey.charAt(0).toUpperCase() + configuredNextTierKey.slice(1) : undefined)
+      : nextTier;
+
+  const displayPointsToNextTier = configuredTier
+    ? configuredNextTierKey
+      ? configuredPointsToNextTier
+      : 0
+    : pointsToNextTier ?? 0;
+
+  const progressToNextTier = displayPointsToNextTier <= 0
     ? 100
-    : Math.min((points / (points + pointsToNextTier)) * 100, 100);
+    : Math.min((displayPoints / (displayPoints + displayPointsToNextTier)) * 100, 100);
+
+  const cardBackgroundClass = configuredTier?.cardBackground ?? tierStyle.cardBackground;
+  const nextTierMessage =
+    displayNextTierLabel && displayPointsToNextTier > 0
+      ? `${displayPointsToNextTier.toLocaleString()} points to ${displayNextTierLabel}`
+      : "Max tier unlocked";
 
   return (
     <div className="w-full flex flex-col items-center">
       {/* Tier selector as colored dots */}
       <div className="flex gap-3 mb-6 flex-wrap justify-center">
-        {["bronze", "silver", "gold", "diamond"].map((t) => {
+        {tierKeys.map((t) => {
           const selected = t === tierState;
-          const style = getTierStyle(t as MembershipCardProps["tier"]);
+          const style = getTierStyle(t);
 
           return (
             <button
               key={t}
-              onClick={() => setTierState(t as MembershipCardProps["tier"])}
+              onClick={() => {
+                setTierState(t);
+                setHasInteracted(true);
+              }}
               className={`w-6 h-6 rounded-full cursor-pointer border-2 transition-all duration-300
                 ${style.bg} ${style.border}
                 ${selected ? "ring-2 ring-offset-2 ring-primary" : "hover:scale-110"}
@@ -168,11 +218,11 @@ export const Component = ({
               <div className="flex items-center gap-2">
                 <Star className={`h-5 w-5 ${tierStyle.color}`} />
                 <span className="font-medium">
-                  {points.toLocaleString()} Points
+                  {displayPoints.toLocaleString()} Points
                 </span>
               </div>
               <span className="text-sm text-muted-foreground">
-                {pointsToNextTier.toLocaleString()} points to {nextTier}
+                {nextTierMessage}
               </span>
             </div>
 
@@ -187,7 +237,7 @@ export const Component = ({
           </div>
 
           <motion.div
-            className={`relative h-48 rounded-xl overflow-hidden ${tierStyle.border} border-2 p-5 flex flex-col justify-between`}
+            className={`relative h-48 rounded-xl overflow-hidden ${tierStyle.border} border-2 p-5 flex flex-col justify-between ${cardBackgroundClass ?? ""}`}
             style={{
               background: `linear-gradient(135deg, var(--background), transparent)`,
             }}
@@ -236,7 +286,7 @@ export const Component = ({
             </div>
 
             <ul className="space-y-2">
-              {benefits.map((benefit, index) => (
+              {displayBenefits.map((benefit, index) => (
                 <motion.li
                   key={index}
                   className="flex items-center gap-2 text-sm"

@@ -11,6 +11,53 @@ import type { GuestFeedbackContent, GuestFeedbackReview } from '../sections/gues
 import { getReviewsWithFilters, getRatingStats, getFeaturedTags, getRatingBreakdown } from '../shared/services';
 import { resolveReviewImages } from '../shared/config/review-media';
 
+function seededRandom(seed: string) {
+  const input = seed ?? '';
+  let state = 0x811c9dc5;
+  for (let index = 0; index < input.length; index += 1) {
+    state ^= input.charCodeAt(index);
+    state = Math.imul(state, 0x01000193);
+    state >>>= 0;
+  }
+  return state / 0xffffffff;
+}
+
+function selectReviewImages({
+  reviewId,
+  baseImages,
+  originalProvidedCount,
+}: {
+  reviewId: string;
+  baseImages: string[];
+  originalProvidedCount: number;
+}): string[] {
+  if (baseImages.length === 0) {
+    return [];
+  }
+
+  const includeRoll = seededRandom(`${reviewId}:include`);
+  const includeThreshold = originalProvidedCount > 0 ? 0.65 : 0.88;
+  const shouldInclude = includeRoll >= includeThreshold;
+
+  if (!shouldInclude) {
+    return [];
+  }
+
+  const maxImages = Math.min(baseImages.length, 3);
+  const countRoll = seededRandom(`${reviewId}:count`);
+  const targetCount =
+    countRoll < 0.6 ? 1 : countRoll < 0.9 ? Math.min(2, maxImages) : maxImages;
+
+  const ranked = baseImages.map((image, index) => ({
+    image,
+    order: seededRandom(`${reviewId}:order:${index}`),
+  }));
+
+  ranked.sort((a, b) => a.order - b.order);
+
+  return ranked.slice(0, targetCount).map(({ image }) => image);
+}
+
 interface ReviewsPageProps {
   searchParams?: Promise<{
     rating?: string;
@@ -72,7 +119,11 @@ export default async function ReviewsPage({ searchParams }: ReviewsPageProps) {
       source: review.source ?? 'website',
       verified: Boolean(review.verified),
       featured: Boolean(review.featured),
-      images: mergedImages,
+      images: selectReviewImages({
+        reviewId: review.id,
+        baseImages: mergedImages,
+        originalProvidedCount: primaryImages.length,
+      }),
       ownerResponse: review.owner_response ?? null,
       ownerRespondedAt: review.owner_responded_at ?? null,
       helpfulCount: review.helpful_count ?? 0,

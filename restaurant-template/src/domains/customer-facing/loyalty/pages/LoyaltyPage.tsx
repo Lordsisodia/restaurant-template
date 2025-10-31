@@ -161,10 +161,10 @@ export default async function LoyaltyPage() {
     pointsToNextTier,
     memberSince,
     benefits: [
-      'Cold brew flight after visit five',
-      'Silver unlocks 10% savings every visit',
-      'Gold secures tasting nights & 15% off',
-      'Diamond concierge with 20% off special events',
+      'Earn 1 point for every IDR 1,000 spent',
+      'Track your progress toward Bronze status',
+      'Unlock tiered savings once you reach Silver',
+      'Birthday dessert when you hit Bronze',
   ],
   } as const;
 
@@ -209,11 +209,62 @@ export default async function LoyaltyPage() {
     },
   ];
 
+  const membershipCardTierDetails = {
+    bronze: {
+      points: tierThresholds.bronze,
+      nextTier: 'silver',
+      nextTierLabel: 'Silver',
+      pointsToNextTier: tierThresholds.silver - tierThresholds.bronze,
+      benefits: [
+        'Welcome latte on your 3rd visit',
+        'Birthday dessert for two',
+        'Access to member-only tastings waitlist',
+      ],
+      cardBackground: 'bg-gradient-to-br from-amber-900/40 via-amber-700/25 to-amber-500/20',
+    },
+    silver: {
+      points: tierThresholds.silver,
+      nextTier: 'gold',
+      nextTierLabel: 'Gold',
+      pointsToNextTier: tierThresholds.gold - tierThresholds.silver,
+      benefits: [
+        '10% off every visit',
+        'Priority reservations any night',
+        'Double points every Wednesday',
+      ],
+      cardBackground: 'bg-gradient-to-br from-slate-900/35 via-slate-700/25 to-slate-500/20',
+    },
+    gold: {
+      points: tierThresholds.gold,
+      nextTier: 'diamond',
+      nextTierLabel: 'Diamond',
+      pointsToNextTier: tierThresholds.diamond - tierThresholds.gold,
+      benefits: [
+        '15% off food & drink',
+        'Chef-led tasting night invitations',
+        'Complimentary monthly pairings',
+      ],
+      cardBackground: 'bg-gradient-to-br from-yellow-900/30 via-amber-700/25 to-yellow-500/20',
+    },
+    diamond: {
+      points: tierThresholds.diamond,
+      nextTier: null,
+      nextTierLabel: 'Max Tier',
+      pointsToNextTier: 0,
+      benefits: [
+        '20% off plus concierge event planning',
+        'Private barista workshops',
+        'Hosted lounge seating & VIP access',
+      ],
+      cardBackground: 'bg-gradient-to-br from-sky-900/30 via-sky-700/25 to-emerald-500/20',
+    },
+  } as const;
+
   return (
     <div className="mx-auto flex w-full max-w-5xl flex-col gap-14 px-6 pb-16 pt-24 sm:pt-28">
       <section className="flex flex-col items-center gap-8 text-center">
         <SectionHeading centered {...membershipHeading} />
-        <MembershipCard {...membershipCardProps} />
+        <MembershipCard {...membershipCardProps} tierDetails={membershipCardTierDetails} />
       </section>
 
       <section className="space-y-6 rounded-3xl border border-white/10 bg-background/90 p-8 shadow-xl backdrop-blur-sm sm:p-10">

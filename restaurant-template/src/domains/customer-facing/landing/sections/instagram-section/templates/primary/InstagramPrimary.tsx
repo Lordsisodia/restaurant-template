@@ -2,7 +2,7 @@
 
 import { Instagram } from "lucide-react";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { SectionHeading } from "@/domains/shared/components";
 import type { InstagramContent } from "../../types/schema";
 
@@ -24,14 +24,41 @@ export default function InstagramPrimary({
 }: InstagramContent) {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
 
-  const groupedImages = images.reduce<Array<string[]>>((groups, img, index) => {
-    const groupIndex = Math.floor(index / 4);
+  const pairImages = images.reduce<Array<string[]>>((groups, img, index) => {
+    const groupIndex = Math.floor(index / 2);
     if (!groups[groupIndex]) {
       groups[groupIndex] = [];
     }
     groups[groupIndex]?.push(img);
     return groups;
   }, []);
+
+  const slides = pairImages.length > 0 ? pairImages : [[images[0] ?? DEFAULT_IMAGES[0], images[1] ?? DEFAULT_IMAGES[1]]];
+  const loopSlides = [...slides, ...slides];
+
+  const scrollerRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    const el = scrollerRef.current;
+    if (!el) return;
+
+    let animationFrame: number;
+
+    const step = () => {
+      if (!el) return;
+      el.scrollLeft += 0.5;
+      const maxScroll = el.scrollWidth / 2;
+      if (el.scrollLeft >= maxScroll) {
+        el.scrollLeft = 0;
+      }
+      animationFrame = requestAnimationFrame(step);
+    };
+
+    animationFrame = requestAnimationFrame(step);
+    return () => {
+      cancelAnimationFrame(animationFrame);
+    };
+  }, [loopSlides.length]);
 
   return (
     <section className="w-full bg-gradient-to-b from-background to-muted/20 py-16">
@@ -50,51 +77,47 @@ export default function InstagramPrimary({
           />
         </div>
 
-        <div className="mb-8 overflow-x-auto pb-2">
-          <div className="flex snap-x snap-mandatory gap-4 [&::-webkit-scrollbar]:hidden">
-            {groupedImages.map((group, groupIdx) => (
+        <div className="relative mb-8 overflow-hidden">
+          <div className="pointer-events-none absolute inset-y-0 left-0 w-12 bg-gradient-to-r from-background to-transparent" />
+          <div className="pointer-events-none absolute inset-y-0 right-0 w-12 bg-gradient-to-l from-background to-transparent" />
+
+          <div ref={scrollerRef} className="relative flex snap-x gap-4 overflow-x-scroll [&::-webkit-scrollbar]:hidden"> 
+            {loopSlides.map((pair, pairIdx) => (
               <div
-                key={groupIdx}
-                className="relative w-[320px] flex-shrink-0 snap-center overflow-hidden rounded-3xl border border-border/60 bg-background/80 p-3 shadow-sm"
+                key={`${pairIdx}-${pair[0]}`}
+                className="flex w-[220px] flex-shrink-0 snap-start flex-col gap-4"
               >
-                <div className="grid h-full grid-cols-2 grid-rows-2 gap-3">
-                  {group.map((img, idx) => {
-                    const globalIndex = groupIdx * 4 + idx;
-                    return (
-                      <a
-                        key={globalIndex}
-                        href={instagramUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="group relative block overflow-hidden rounded-2xl"
-                        onMouseEnter={() => setHoveredIndex(globalIndex)}
-                        onMouseLeave={() => setHoveredIndex(null)}
+                {pair.map((img, idx) => {
+                  const globalIndex = ((pairIdx % slides.length) * 2) + idx;
+                  return (
+                    <a
+                      key={`${pairIdx}-${idx}`}
+                      href={instagramUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="group relative block aspect-square overflow-hidden rounded-3xl border border-border/60"
+                      onMouseEnter={() => setHoveredIndex(globalIndex)}
+                      onMouseLeave={() => setHoveredIndex(null)}
+                    >
+                      <Image
+                        src={img}
+                        alt={`Instagram post ${globalIndex + 1}`}
+                        fill
+                        className="object-cover transition-transform duration-300 group-hover:scale-105"
+                        sizes="220px"
+                      />
+                      <div
+                        className={`absolute inset-0 bg-gradient-to-t from-black/60 to-transparent transition-opacity duration-300 ${
+                          hoveredIndex === globalIndex ? "opacity-100" : "opacity-0"
+                        }`}
                       >
-                        <Image
-                          src={img}
-                          alt={`Instagram post ${globalIndex + 1}`}
-                          fill
-                          className="object-cover transition-transform duration-300 group-hover:scale-105"
-                          sizes="160px"
-                        />
-                        <div
-                          className={`absolute inset-0 bg-gradient-to-t from-black/60 to-transparent transition-opacity duration-300 ${
-                            hoveredIndex === globalIndex ? "opacity-100" : "opacity-0"
-                          }`}
-                        >
-                          <div className="absolute bottom-2 left-2 rounded-full bg-black/40 p-1">
-                            <Instagram className="h-4 w-4 text-white" />
-                          </div>
+                        <div className="absolute bottom-2 left-2 rounded-full bg-black/40 p-1">
+                          <Instagram className="h-4 w-4 text-white" />
                         </div>
-                      </a>
-                    );
-                  })}
-                  {group.length < 4
-                    ? Array.from({ length: 4 - group.length }).map((_, fillerIdx) => (
-                        <div key={`filler-${groupIdx}-${fillerIdx}`} className="rounded-2xl border border-dashed border-border/50" />
-                      ))
-                    : null}
-                </div>
+                      </div>
+                    </a>
+                  );
+                })}
               </div>
             ))}
           </div>

@@ -1,7 +1,7 @@
 'use client';
 
-import { useMemo } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { useMemo, useState } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { SectionHeading, AnimatedText } from '@/domains/shared/components';
 import { useMenuCategories, useMenuItems } from '@/domains/customer-facing/menu';
@@ -12,15 +12,19 @@ import {
   MenuItemCardRenderer,
   type MenuItemCardContent,
 } from '@/domains/customer-facing/menu/sections/menu-item-card';
-import type { MenuCategoriesContent } from '@/domains/customer-facing/menu/sections/menu-categories';
 import type { MenuItem } from '@/domains/customer-facing/menu/shared/types';
 import MenuLoadingState from '@/domains/customer-facing/menu/sections/menu-categories/shared/components/MenuLoadingState';
 import MenuErrorAlert from '@/domains/customer-facing/menu/sections/menu-categories/shared/components/MenuErrorAlert';
 import MenuEmptyState from '@/domains/customer-facing/menu/sections/menu-categories/shared/components/MenuEmptyState';
+import {
+  MenuItemDetailRenderer,
+  type MenuItemDetailContent,
+} from '@/domains/customer-facing/menu/sections/menu-item-detail';
 import type { MenuCategoriesContent } from '@/domains/customer-facing/menu/sections/menu-categories';
 
 export default function MenuCategoriesPage() {
   const searchParams = useSearchParams();
+  const router = useRouter();
   const targetGroupSlug = searchParams.get('group');
 
   const {
@@ -52,6 +56,7 @@ export default function MenuCategoriesPage() {
   );
 
   const categoryNameById = useMemo(() => new Map(sortedCategories.map((cat) => [cat.id, cat.name])), [sortedCategories]);
+  const [selectedItem, setSelectedItem] = useState<MenuItem | null>(null);
 
   const toCardContent = (item: MenuItem): MenuItemCardContent => ({
     id: item.id,
@@ -82,6 +87,16 @@ export default function MenuCategoriesPage() {
     badges: item.is_new ? ['New'] : undefined,
   });
 
+  const toDetailContent = (item: MenuItem): MenuItemDetailContent => ({
+    ...toCardContent(item),
+    heroImageUrl: item.image_url ?? undefined,
+    gallery: undefined,
+    origin: undefined,
+    availability: undefined,
+    winePairing: undefined,
+    preparationNotes: undefined,
+  });
+
   const selectedGroup = targetGroupSlug
     ? groupedSections.find((section) => section.slug === targetGroupSlug)
     : null;
@@ -91,8 +106,7 @@ export default function MenuCategoriesPage() {
       return groupedSections;
     }
 
-    const rest = groupedSections.filter((section) => section.slug !== selectedGroup.slug);
-    return [selectedGroup, ...rest];
+    return [selectedGroup];
   }, [groupedSections, selectedGroup]);
 
   if (loading) {
@@ -137,12 +151,26 @@ export default function MenuCategoriesPage() {
         <div className="mx-auto w-full max-w-6xl">
           <SectionHeading
             pillText="Menu Categories"
-            title="Explore Every Section"
-            subtitle={`${groupedSections.length} curated sections • ${totalItems} total items${selectedGroup ? ` • Showing ${selectedGroup.label}` : ''}`}
+            title={selectedGroup ? selectedGroup.label : 'Explore Every Section'}
+            subtitle={selectedGroup
+              ? `${selectedGroup.items.length} items in this section`
+              : `${groupedSections.length} curated sections • ${totalItems} total items`}
             centered
             className="text-center"
             titleClassName="text-3xl sm:text-4xl font-semibold"
           />
+
+          {selectedGroup ? (
+            <div className="mt-6 flex justify-center">
+              <button
+                type="button"
+                onClick={() => router.push('/menu/categories')}
+                className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-2 text-sm font-semibold text-white transition hover:border-white/30 hover:bg-white/15"
+              >
+                View all menu sections
+              </button>
+            </div>
+          ) : null}
         </div>
       </section>
 
@@ -198,7 +226,10 @@ export default function MenuCategoriesPage() {
                               transition={{ duration: 0.25, delay: 0.05 }}
                               className="h-full"
                             >
-                              <MenuItemCardRenderer content={toCardContent(item)} />
+                              <MenuItemCardRenderer
+                                content={toCardContent(item)}
+                                onSelectItem={() => setSelectedItem(item)}
+                              />
                             </motion.div>
                           ))}
                         </div>
@@ -210,9 +241,17 @@ export default function MenuCategoriesPage() {
             );
           })}
 
-          <MenuAboutSection about={about} />
+          {!selectedGroup ? <MenuAboutSection about={about} /> : null}
         </div>
       </section>
+
+      {selectedItem ? (
+        <MenuItemDetailRenderer
+          content={toDetailContent(selectedItem)}
+          isOpen
+          onClose={() => setSelectedItem(null)}
+        />
+      ) : null}
     </div>
   );
 }

@@ -28,7 +28,7 @@ const PAGE_LABELS: Record<string, string> = {
   membership: 'Membership',
   reviews: 'Reviews',
   chat: 'Chat',
-  promotions: 'Promotions Bay',
+  promotions: 'Promotions',
   about: 'About Us',
   blog: 'Blog',
   'our-story': 'Our Story',

@@ -1,0 +1,133 @@
+.postBody {
+  display: grid;
+  gap: 1.75rem;
+  color: rgba(255, 255, 255, 0.78);
+}
+
+.postBody h2,
+.postBody h3,
+.postBody h4 {
+  font-weight: 650;
+  color: #ffffff;
+  letter-spacing: -0.01em;
+}
+
+.postBody h2 {
+  font-size: 1.875rem;
+  margin-top: 3rem;
+  margin-bottom: 1rem;
+}
+
+.postBody h3 {
+  font-size: 1.5rem;
+  margin-top: 2.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.postBody h4 {
+  font-size: 1.25rem;
+  margin-top: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+.postBody p,
+.postBody ul,
+.postBody ol,
+.postBody blockquote {
+  background: #0b0b10;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 1.75rem;
+  padding: 1.5rem 1.75rem;
+  line-height: 1.75;
+  font-size: 1.05rem;
+}
+
+.postBody p {
+  margin: 0;
+}
+
+.postBody p + p {
+  margin-top: -0.5rem;
+}
+
+.postBody a {
+  color: #facc15;
+  text-decoration: none;
+}
+
+.postBody a:hover {
+  color: #fde68a;
+}
+
+.postBody ul,
+.postBody ol {
+  margin: 0;
+  padding-left: 2.75rem;
+}
+
+.postBody ul li,
+.postBody ol li {
+  margin-bottom: 0.5rem;
+}
+
+.postBody ul li:last-child,
+.postBody ol li:last-child {
+  margin-bottom: 0;
+}
+
+.postBody ul li::marker {
+  color: #fbbf24;
+}
+
+.postBody ol {
+  counter-reset: item;
+}
+
+.postBody blockquote {
+  background: rgba(245, 158, 11, 0.08);
+  border: 1px solid rgba(245, 158, 11, 0.3);
+  color: rgba(255, 255, 255, 0.8);
+  font-style: italic;
+}
+
+.postBody code {
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 0.5rem;
+  padding: 0.2rem 0.5rem;
+  font-size: 0.95rem;
+  color: #f8fafc;
+}
+
+.postBody pre {
+  background: #0f0f15;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 1.5rem;
+  padding: 1.5rem;
+  overflow: auto;
+}
+
+.postBody figure {
+  background: #0b0b10;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 1.75rem;
+  overflow: hidden;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.35);
+}
+
+.postBody figure img {
+  width: 100%;
+  height: 20rem;
+  object-fit: cover;
+}
+
+.postBody figure figcaption {
+  padding: 0.75rem 1.5rem 1.25rem;
+  font-size: 0.95rem;
+  color: rgba(255, 255, 255, 0.65);
+}
+
+.postBody hr {
+  border: none;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  margin: 3rem 0;
+}

@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 
 import type { LucideIcon } from 'lucide-react';
 import {
@@ -139,8 +139,8 @@ export const Component = ({
     setDraft('');
   };
 
-  const headerPadding = compact ? 'px-5 pt-5 pb-4' : 'px-8 pt-8 pb-5';
-  const bodyPadding = compact ? 'px-5 pb-5' : 'px-8 pb-8';
+  const headerPadding = compact ? 'px-5 pt-4 pb-3.5' : 'px-6 pt-6 pb-4';
+  const bodyPadding = compact ? 'px-5 pb-4' : 'px-6 pb-6';
   const messagePadding = compact ? 'px-4 py-4' : 'px-6 py-6';
 
   return (
@@ -195,116 +195,6 @@ export const Component = ({
       <CardContent className={cn('flex h-full min-h-0 flex-col p-0', contentClassName)}>
         <div className={cn('flex h-full min-h-0 flex-col', compact ? 'gap-4' : 'gap-6')}>
           <div className={cn('flex flex-col', headerPadding)}>
-            <div className="mb-4 flex justify-center">
-              <svg
-                fill="none"
-                height="48"
-                viewBox="0 0 48 48"
-                width="48"
-                xmlns="http://www.w3.org/2000/svg"
-                xmlnsXlink="http://www.w3.org/1999/xlink"
-              >
-                <filter
-                  id="a"
-                  colorInterpolationFilters="sRGB"
-                  filterUnits="userSpaceOnUse"
-                  height="54"
-                  width="48"
-                  x="0"
-                  y="-3"
-                >
-                  <feFlood floodOpacity="0" result="BackgroundImageFix" />
-                  <feBlend in="SourceGraphic" in2="BackgroundImageFix" mode="normal" result="shape" />
-                  <feColorMatrix
-                    in="SourceAlpha"
-                    result="hardAlpha"
-                    type="matrix"
-                    values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
-                  />
-                  <feOffset dy="-3" />
-                  <feGaussianBlur stdDeviation="1.5" />
-                  <feComposite in2="hardAlpha" k2="-1" k3="1" operator="arithmetic" />
-                  <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.1 0" />
-                  <feBlend in2="shape" mode="normal" result="effect1_innerShadow_3051_46851" />
-                  <feColorMatrix
-                    in="SourceAlpha"
-                    result="hardAlpha"
-                    type="matrix"
-                    values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
-                  />
-                  <feOffset dy="3" />
-                  <feGaussianBlur stdDeviation="1.5" />
-                  <feComposite in2="hardAlpha" k2="-1" k3="1" operator="arithmetic" />
-                  <feColorMatrix type="matrix" values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.1 0" />
-                  <feBlend in2="effect1_innerShadow_3051_46851" mode="normal" result="effect2_innerShadow_3051_46851" />
-                  <feColorMatrix
-                    in="SourceAlpha"
-                    result="hardAlpha"
-                    type="matrix"
-                    values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
-                  />
-                  <feMorphology in="SourceAlpha" operator="erode" radius="1" result="effect3_innerShadow_3051_46851" />
-                  <feOffset />
-                  <feComposite in2="hardAlpha" k2="-1" k3="1" operator="arithmetic" />
-                  <feColorMatrix type="matrix" values="0 0 0 0 0.0627451 0 0 0 0 0.0941176 0 0 0 0 0.156863 0 0 0 0.24 0" />
-                  <feBlend in2="effect2_innerShadow_3051_46851" mode="normal" result="effect3_innerShadow_3051_46851" />
-                </filter>
-                <filter
-                  id="b"
-                  colorInterpolationFilters="sRGB"
-                  filterUnits="userSpaceOnUse"
-                  height="42"
-                  width="42"
-                  x="3"
-                  y="5.25"
-                >
-                  <feFlood floodOpacity="0" result="BackgroundImageFix" />
-                  <feColorMatrix
-                    in="SourceAlpha"
-                    result="hardAlpha"
-                    type="matrix"
-                    values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
-                  />
-                  <feMorphology in="SourceAlpha" operator="erode" radius="1.5" result="effect1_dropShadow_3051_46851" />
-                  <feOffset dy="2.25" />
-                  <feGaussianBlur stdDeviation="2.25" />
-                  <feComposite in2="hardAlpha" operator="out" />
-                  <feColorMatrix type="matrix" values="0 0 0 0 0.141176 0 0 0 0 0.141176 0 0 0 0 0.141176 0 0 0 0.1 0" />
-                  <feBlend in2="BackgroundImageFix" mode="normal" result="effect1_dropShadow_3051_46851" />
-                  <feBlend in="SourceGraphic" in2="effect1_dropShadow_3051_46851" mode="normal" result="shape" />
-                </filter>
-                <linearGradient id="c" gradientUnits="userSpaceOnUse" x1="24" x2="26" y1="0.000001" y2="48">
-                  <stop offset="0" stopColor="#fff" stopOpacity="0" />
-                  <stop offset="1" stopColor="#fff" stopOpacity="0.12" />
-                </linearGradient>
-                <linearGradient id="d" gradientUnits="userSpaceOnUse" x1="24" x2="24" y1="6" y2="42">
-                  <stop offset="0" stopColor="#fff" stopOpacity="0.8" />
-                  <stop offset="1" stopColor="#fff" stopOpacity="0.5" />
-                </linearGradient>
-                <linearGradient id="e" gradientUnits="userSpaceOnUse" x1="24" x2="24" y1="0" y2="48">
-                  <stop offset="0" stopColor="#fff" stopOpacity="0.12" />
-                  <stop offset="1" stopColor="#fff" stopOpacity="0" />
-                </linearGradient>
-                <clipPath id="f">
-                  <rect height="48" rx="12" width="48" />
-                </clipPath>
-                <g filter="url(#a)">
-                  <g clipPath="url(#f)">
-                    <rect fill="#0A0D12" height="48" rx="12" width="48" />
-                    <path d="m0 0h48v48h-48z" fill="url(#c)" />
-                    <g filter="url(#b)">
-                      <path
-                        clipRule="evenodd"
-                        d="m6 24c11.4411 0 18-6.5589 18-18 0 11.4411 6.5589 18 18 18-11.4411 0-18 6.5589-18 18 0-11.4411-6.5589-18-18-18z"
-                        fill="url(#d)"
-                        fillRule="evenodd"
-                      />
-                    </g>
-                  </g>
-                  <rect height="46" rx="11" stroke="url(#e)" strokeWidth="2" width="46" x="1" y="1" />
-                </g>
-              </svg>
-            </div>
             <div className="flex flex-col space-y-2 text-left">
               {showUserName && userName ? (
                 <span className="text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground/80">
@@ -393,9 +283,19 @@ const PromptComposer = ({ value, onChange, onSubmit, canSend, modelOptions, defa
     onSubmit();
   };
 
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  useEffect(() => {
+    const el = textareaRef.current;
+    if (!el) return;
+    el.style.height = 'auto';
+    el.style.height = `${Math.min(el.scrollHeight, compact ? 96 : 120)}px`;
+  }, [value, compact]);
+
   return (
-    <div className={cn('rounded-3xl border border-white/10 bg-[#1F2023] p-3 shadow-[0_10px_26px_rgba(0,0,0,0.32)]', compact && 'rounded-2xl p-2.5')}>
+    <div className={cn('rounded-3xl border border-white/10 bg-[#1F2023] p-2 shadow-[0_6px_20px_rgba(0,0,0,0.24)]', compact && 'rounded-2xl p-1.5')}>
       <Textarea
+        ref={textareaRef}
         value={value}
         onChange={(event) => onChange(event.target.value)}
         onKeyDown={(event) => {
@@ -404,38 +304,39 @@ const PromptComposer = ({ value, onChange, onSubmit, canSend, modelOptions, defa
             handleSubmit();
           }
         }}
+        rows={1}
         placeholder={placeholder}
         className={cn(
-          'min-h-[72px] w-full resize-none border-none bg-transparent px-0 text-sm leading-relaxed text-white placeholder:text-white/50 focus-visible:ring-0 focus-visible:ring-offset-0',
-          compact && 'min-h-[60px] text-sm'
+          'min-h-[40px] w-full resize-none border-none bg-transparent px-0 py-1.5 text-sm leading-relaxed text-white placeholder:text-white/55 focus-visible:ring-0 focus-visible:ring-offset-0',
+          compact && 'min-h-[36px] py-1 text-sm'
         )}
       />
 
-      <div className="mt-2.5 flex flex-col gap-2.5">
+      <div className="mt-1.5 flex flex-col gap-1.5">
         <div className="flex items-center justify-end gap-1.5">
-          <div className="flex items-center gap-2 self-end sm:self-auto">
-            <Button type="button" variant="ghost" size="icon" className="h-8 w-8 rounded-full text-white/70 hover:text-white">
-              <Mic className="size-3.5" />
+          <div className="flex items-center gap-1.5 self-end sm:self-auto">
+            <Button type="button" variant="ghost" size="icon" className="h-7 w-7 rounded-full text-white/70 hover:text-white">
+              <Mic className="size-3" />
               <span className="sr-only">Record a voice note</span>
             </Button>
             <Button
               type="button"
               onClick={handleSubmit}
               className={cn(
-                'h-8 w-8 rounded-full transition',
+                'h-7 w-7 rounded-full transition',
                 canSend ? 'bg-white text-[#1F2023] hover:bg-white/80' : 'bg-white/10 text-white/40'
               )}
               disabled={!canSend}
             >
-              <ArrowUp className="size-3.5" />
+              <ArrowUp className="size-3" />
               <span className="sr-only">Send message</span>
             </Button>
           </div>
         </div>
 
-        <div className="flex flex-wrap items-center gap-1.5 border-t border-white/10 pt-2.5">
+        <div className="flex flex-wrap items-center gap-1.5 border-t border-white/10 pt-2">
           <Select defaultValue={defaultModel}>
-            <SelectTrigger className="h-8 w-[135px] rounded-full border-white/15 bg-[#111217] text-xs text-white/80">
+            <SelectTrigger className="h-8 w-[118px] rounded-full border-white/15 bg-[#111217] text-xs text-white/80">
               <SelectValue placeholder="Select a model" />
             </SelectTrigger>
             <SelectContent>
@@ -450,7 +351,7 @@ const PromptComposer = ({ value, onChange, onSubmit, canSend, modelOptions, defa
           <Button
             type="button"
             variant="ghost"
-            className="h-8 gap-1.5 rounded-full px-3 text-xs text-white/70 transition hover:text-white"
+            className="h-8 gap-1.5 rounded-full px-2.5 text-xs text-white/70 transition hover:text-white"
             onClick={() => fileInputRef.current?.click()}
           >
             <Paperclip className="size-3" />
@@ -466,7 +367,7 @@ const PromptComposer = ({ value, onChange, onSubmit, canSend, modelOptions, defa
               }
             }}
           />
-          <Button type="button" variant="ghost" className="h-8 gap-1.5 rounded-full px-3 text-xs text-white/70 transition hover:text-white">
+          <Button type="button" variant="ghost" className="h-8 gap-1.5 rounded-full px-2.5 text-xs text-white/70 transition hover:text-white">
             <SparklesIcon className="size-3" />
             Shortcuts
           </Button>
