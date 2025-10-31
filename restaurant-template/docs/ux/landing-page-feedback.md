@@ -121,8 +121,7 @@ Note: provided from prior knowledge; we’ll validate and refine together.
 - SingleThread (Healdsburg) — `https://www.singlethreadfarms.com`
 
 ## 11) Next Steps (Ucodex Backlog)
-- Approve hero media (poster image + optional video spec); compress and add to CDN.
-- Confirm hero media (poster image + optional video spec); compress and add to CDN.
+- Finalize hero media (poster image + optional video) and deliver compressed assets to the CDN.
 
 ### Acceptance Criteria (MVP)
 - Initial load shows branded background + logo; no black flash.
