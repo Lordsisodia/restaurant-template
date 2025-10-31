@@ -9,6 +9,7 @@ export const menuItemDetailContentZodSchema = menuItemCardContentZodSchema.exten
   availability: z.string().optional(),
   winePairing: z.string().optional(),
   preparationNotes: z.string().optional(),
+  recommendedItems: z.array(menuItemCardContentZodSchema).optional(),
 });
 
 export const menuItemDetailContentSchema = createSectionSchema(menuItemDetailContentZodSchema);

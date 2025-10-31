@@ -110,15 +110,49 @@ export default function MenuCategoriesPrimary({
     badges: item.is_new ? ['New'] : undefined,
   });
 
-  const toDetailContent = (item: MenuItem): MenuItemDetailContent => ({
-    ...toCardContent(item),
-    heroImageUrl: item.image_url ?? undefined,
-    gallery: undefined,
-    origin: undefined,
-    availability: undefined,
-    winePairing: undefined,
-    preparationNotes: undefined,
-  });
+  const toDetailContent = (item: MenuItem): MenuItemDetailContent => {
+    const pairingNames = Array.isArray(item.pairings) ? item.pairings : [];
+    const recommendedPool: MenuItem[] = [];
+
+    pairingNames.forEach((name) => {
+      const match = menuItems.find((candidate) =>
+        candidate.id === name || candidate.name.toLowerCase() === name.toLowerCase(),
+      );
+      if (match) {
+        recommendedPool.push(match);
+      }
+    });
+
+    if (recommendedPool.length < 3) {
+      const sameCategory = menuItems
+        .filter((candidate) => candidate.category === item.category && candidate.id !== item.id)
+        .sort((a, b) => (b.popular_score ?? 0) - (a.popular_score ?? 0));
+
+      sameCategory.forEach((candidate) => {
+        if (recommendedPool.length >= 4) {
+          return;
+        }
+        if (!recommendedPool.some((existing) => existing.id === candidate.id)) {
+          recommendedPool.push(candidate);
+        }
+      });
+    }
+
+    const recommendedContent = recommendedPool
+      .slice(0, 6)
+      .map((candidate) => toCardContent(candidate));
+
+    return {
+      ...toCardContent(item),
+      heroImageUrl: item.image_url ?? undefined,
+      gallery: undefined,
+      origin: undefined,
+      availability: undefined,
+      winePairing: undefined,
+      preparationNotes: undefined,
+      recommendedItems: recommendedContent.length > 0 ? recommendedContent : undefined,
+    };
+  };
 
   const handleSelectItem = (itemId: string) => {
     const match = menuItems.find((entry) => entry.id === itemId);

@@ -87,7 +87,38 @@ export default function MenuCategoriesPage() {
     badges: item.is_new ? ['New'] : undefined,
   });
 
-  const toDetailContent = (item: MenuItem): MenuItemDetailContent => ({
+const toDetailContent = (item: MenuItem): MenuItemDetailContent => {
+  const recommendedPool: MenuItem[] = [];
+  const pairingNames = Array.isArray(item.pairings) ? item.pairings : [];
+
+  pairingNames.forEach((name) => {
+    const match = items.find((candidate) =>
+      candidate.id === name || candidate.name.toLowerCase() === name.toLowerCase(),
+    );
+    if (match) {
+      recommendedPool.push(match);
+    }
+  });
+
+  if (recommendedPool.length < 3) {
+    const sameCategory = items
+      .filter((candidate) => candidate.category === item.category && candidate.id !== item.id)
+      .sort((a, b) => (b.popular_score ?? 0) - (a.popular_score ?? 0));
+    sameCategory.forEach((candidate) => {
+      if (recommendedPool.length >= 4) {
+        return;
+      }
+      if (!recommendedPool.some((existing) => existing.id === candidate.id)) {
+        recommendedPool.push(candidate);
+      }
+    });
+  }
+
+  const recommendedItems = recommendedPool
+    .slice(0, 6)
+    .map((candidate) => toCardContent(candidate));
+
+  return {
     ...toCardContent(item),
     heroImageUrl: item.image_url ?? undefined,
     gallery: undefined,
@@ -95,7 +126,9 @@ export default function MenuCategoriesPage() {
     availability: undefined,
     winePairing: undefined,
     preparationNotes: undefined,
-  });
+    recommendedItems: recommendedItems.length > 0 ? recommendedItems : undefined,
+  };
+};
 
   const selectedGroup = targetGroupSlug
     ? groupedSections.find((section) => section.slug === targetGroupSlug)

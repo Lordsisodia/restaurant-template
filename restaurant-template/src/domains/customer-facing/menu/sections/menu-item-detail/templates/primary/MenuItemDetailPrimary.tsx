@@ -52,6 +52,7 @@ export default function MenuItemDetailPrimary({
   isHalal,
   isKosher,
   servingSizeGrams,
+  recommendedItems,
 }: Props) {
   const fallbackItem: MenuItem = {
     id,
@@ -206,10 +207,18 @@ export default function MenuItemDetailPrimary({
             ) : null}
 
             {displayPairings.length > 0 ? (
-              <RecommendationSection items={displayPairings} title="Recommended to go with" />
+              <RecommendationSection
+                items={displayPairings}
+                title="Recommended sips & sides"
+                subtitle="Perfect partners chosen by our chef"
+              />
             ) : null}
 
             {chefTip ? <InfoBlock title="Chef's Tip" body={chefTip} /> : null}
+
+            {recommendedItems && recommendedItems.length > 0 ? (
+              <RecommendationsSlider items={recommendedItems} />
+            ) : null}
 
             {gallery && gallery.length > 0 ? (
               <div className="space-y-3">
@@ -377,7 +386,7 @@ function InfoBlock({ title, body, subtitle }: InfoBlockProps) {
   );
 }
 
-function RecommendationSection({ items, title }: { items: string[]; title: string }) {
+function RecommendationSection({ items, title, subtitle }: { items: string[]; title: string; subtitle?: string }) {
   const suggestions = items.slice(0, 4);
 
   return (
@@ -391,7 +400,7 @@ function RecommendationSection({ items, title }: { items: string[]; title: strin
         underlineHeight="h-[2px]"
         underlineOffset="mt-2"
       />
-      <p className="mt-2 text-xs uppercase tracking-[0.2em] text-gray-400">Complete the experience</p>
+      <p className="mt-2 text-xs uppercase tracking-[0.2em] text-gray-400">{subtitle ?? 'Complete the experience'}</p>
       <div className="mt-4 flex flex-wrap gap-3">
         {suggestions.map((suggestion) => (
           <span
@@ -402,6 +411,47 @@ function RecommendationSection({ items, title }: { items: string[]; title: strin
             {suggestion}
           </span>
         ))}
+      </div>
+    </div>
+  );
+}
+
+function RecommendationsSlider({ items }: { items: MenuItemCardContent[] }) {
+  return (
+    <div className="space-y-4">
+      <AnimatedText
+        text="Recommended to go with"
+        as="h3"
+        className="items-start justify-start"
+        textClassName="text-left text-xl font-semibold text-white"
+        underlineGradient="from-amber-400 via-orange-500 to-pink-500"
+        underlineHeight="h-[2px]"
+        underlineOffset="mt-2"
+      />
+      <div className="-mx-1 overflow-x-auto pb-1">
+        <div className="flex gap-4 px-1">
+          {items.map((recommendation) => (
+            <div
+              key={recommendation.id}
+              className="w-[220px] shrink-0 overflow-hidden rounded-2xl border border-white/10 bg-white/5 backdrop-blur-sm shadow-xl"
+            >
+              {recommendation.imageUrl ? (
+                <div className="relative h-36 w-full overflow-hidden">
+                  <img src={recommendation.imageUrl} alt={recommendation.name} className="h-full w-full object-cover" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent" />
+                  <span className="absolute bottom-2 left-2 rounded-full border border-white/20 bg-black/50 px-3 py-1 text-xs uppercase tracking-[0.18em] text-white/80">
+                    {recommendation.category}
+                  </span>
+                </div>
+              ) : null}
+              <div className="space-y-2 p-4">
+                <h4 className="text-sm font-semibold text-white line-clamp-2">{recommendation.name}</h4>
+                <p className="text-xs text-white/60 line-clamp-2">{recommendation.description ?? 'House favourite pairing.'}</p>
+                <p className="text-sm font-semibold text-white/90">{formatPrice(recommendation.price, recommendation.currency)}</p>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );
@@ -435,4 +485,13 @@ function getSpiceInfo({ isSpicy, spiceLevel }: { isSpicy?: boolean; spiceLevel?:
     label: title,
     description,
   };
+}
+
+function formatPrice(value: number, currency = 'IDR') {
+  return new Intl.NumberFormat('id-ID', {
+    style: 'currency',
+    currency,
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  }).format(value);
 }

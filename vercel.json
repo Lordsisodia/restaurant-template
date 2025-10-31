@@ -1,0 +1,9 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "buildCommand": "cd restaurant-template && npm run build",
+  "devCommand": "cd restaurant-template && npm run dev",
+  "installCommand": "cd restaurant-template && npm install",
+  "framework": "nextjs",
+  "outputDirectory": "restaurant-template/.next",
+  "rootDirectory": "restaurant-template"
+}
