@@ -10,6 +10,7 @@ export default function VenueGalleryTemplate2(content: VenueGalleryContent) {
   const { pillText, title, subtitle, intro, images, showCategories } = content;
 
   const sliderImages = images.map((image) => image.url);
+  const sectionPillText = pillText ?? "Our Space";
   const categories = useMemo(() => {
     if (!showCategories) {
       return [] as Array<{ category: string; count: number }>;
@@ -29,7 +30,7 @@ export default function VenueGalleryTemplate2(content: VenueGalleryContent) {
       <div className="relative mx-auto flex w-full max-w-6xl flex-col gap-6 px-6 pt-16 pb-10 lg:flex-row lg:items-center lg:gap-10">
         <div className="w-full space-y-3 text-white lg:max-w-sm">
           <SectionHeading
-            pillText={pillText}
+            pillText={sectionPillText}
             title={title}
             subtitle={subtitle ?? intro}
             titleClassName="text-3xl md:text-4xl font-semibold"

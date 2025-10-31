@@ -55,8 +55,8 @@ const MenuPage = ({ isSignedIn = false }: MenuPageProps) => {
   };
 
   return (
-    <div className="min-h-screen bg-neutral-950 text-white">
-      <main className="mx-auto max-w-6xl px-6 py-14 md:py-16">
+    <div className="min-h-screen bg-neutral-950 text-white pt-24 md:pt-28">
+      <main className="mx-auto max-w-6xl px-6 pb-14 md:pb-16">
         <MenuCategoriesRenderer content={categoriesContent} />
       </main>
     </div>

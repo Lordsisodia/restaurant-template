@@ -4,7 +4,56 @@ import Image from "next/image";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { SectionHeading } from "@/domains/shared/components";
-import type { PromoContent } from '../../types/schema';
+import type { PromoContent, PromotionItem } from '../../types/schema';
+
+const DEFAULT_PROMOTIONS: PromotionItem[] = [
+  {
+    day: "Monday",
+    title: "BOGO Espresso Martinis",
+    description: "Buy one espresso martini, get the second on the house when you join us after work.",
+    timeRange: "5:00 – 7:00 PM",
+    highlight: "2-for-1 Drinks",
+    perks: ["Members earn 2× loyalty points"],
+  },
+  {
+    day: "Tuesday",
+    title: "20% Off Wood-Fired Pizzas",
+    description: "All signature pies are 20% off — perfect for sharing with friends.",
+    timeRange: "All day",
+    highlight: "Kitchen Special",
+  },
+  {
+    day: "Thursday",
+    title: "Live Lounge Karaoke",
+    description: "Take the stage with our house band and enjoy complimentary bar snacks between sets.",
+    timeRange: "8:00 – 11:00 PM",
+    highlight: "Entertainment",
+    perks: ["Free entry for members", "Happy hour pricing on cocktails"],
+  },
+  {
+    day: "Friday",
+    title: "Craft Beer & Bites",
+    description: "Complimentary chef's bite with every draft beer ordered during the night session.",
+    timeRange: "6:00 – 10:00 PM",
+    highlight: "Kitchen Pairing",
+  },
+  {
+    day: "Saturday",
+    title: "Chef's Table Tasting",
+    description: "Seven-course tasting menu with limited seats — reserve ahead to secure your spot.",
+    timeRange: "Seatings at 6:00 & 8:30 PM",
+    highlight: "Limited Seats",
+    ctaLabel: "Reserve a Table",
+    ctaHref: "/reservations",
+  },
+  {
+    day: "Sunday",
+    title: "Family Brunch",
+    description: "Kids eat free with any adult entrée. Featuring live acoustic music from 11:00 AM.",
+    timeRange: "10:00 AM – 2:00 PM",
+    highlight: "Family Day",
+  },
+];
 
 function Pill({ label, tone = "dark" }: { label: string; tone?: "light" | "dark" }) {
   const isLight = tone === "light";
@@ -47,42 +96,44 @@ export default function PromoPrimary({
   imageAlt,
   ctaLabel,
   ctaHref,
-  secondaryCtaLabel,
-  secondaryCtaHref,
   badge,
   schedule,
+  promotions,
 }: PromoContent) {
-  return (
-    <section className="relative mx-auto w-full max-w-6xl overflow-hidden rounded-3xl border border-border/60 bg-background/95 px-6 pb-12 pt-16 shadow-xl shadow-primary/10">
-      <div className="absolute left-6 top-6">
-        <Pill label="Promotions" tone="dark" />
-      </div>
+  const promotionEntries = promotions && promotions.length > 0 ? promotions : DEFAULT_PROMOTIONS;
 
-      <div className="grid gap-10 lg:grid-cols-[2fr,1.2fr] lg:items-center">
-        <div className="space-y-6">
-          {eyebrow ? <Pill label={eyebrow} tone="light" /> : null}
+  return (
+    <section className="relative mx-auto w-full max-w-6xl overflow-hidden rounded-3xl border border-border/60 bg-background/95 px-6 pb-14 pt-16 shadow-xl shadow-primary/10">
+      <div className="flex flex-col gap-10 lg:flex-row lg:items-center">
+        <div className="flex-1 space-y-8">
+          <div className="flex flex-wrap items-center gap-3 text-left">
+            <Pill label={pillText ?? 'Promotions'} tone="dark" />
+            {eyebrow ? (
+              <span className="inline-flex items-center rounded-full border border-foreground/10 bg-foreground/5 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-foreground/70">
+                {eyebrow}
+              </span>
+            ) : null}
+          </div>
 
           <SectionHeading
-            pillText={pillText}
-            pillTone="dark"
             title={title}
             subtitle={description}
             centered={false}
-            titleClassName="text-3xl md:text-4xl font-semibold"
+            titleClassName="text-3xl font-semibold md:text-4xl"
             className="text-left"
           />
 
           <div className="flex flex-wrap items-center gap-3">
             {badge ? (
-              <div className="inline-flex items-center rounded-full border border-primary/30 bg-primary/10 px-3 py-1 text-xs font-medium text-primary">
+              <span className="inline-flex items-center rounded-full border border-primary/30 bg-primary/10 px-3 py-1 text-xs font-medium text-primary">
                 {badge}
-              </div>
+              </span>
             ) : null}
             {schedule ? <p className="text-sm text-muted-foreground">{schedule}</p> : null}
           </div>
 
-          <div className="flex flex-wrap gap-3 pt-2">
-            {ctaLabel && ctaHref ? (
+          {ctaLabel && ctaHref ? (
+            <div className="pt-2">
               <Link
                 href={ctaHref}
                 className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-2.5 text-sm font-semibold text-white transition hover:bg-primary/90"
@@ -90,21 +141,12 @@ export default function PromoPrimary({
                 {ctaLabel}
                 <span aria-hidden>→</span>
               </Link>
-            ) : null}
-            {secondaryCtaLabel && secondaryCtaHref ? (
-              <Link
-                href={secondaryCtaHref}
-                className="inline-flex items-center gap-2 rounded-full border border-border px-6 py-2.5 text-sm font-semibold text-foreground transition hover:border-primary/40 hover:text-primary"
-              >
-                {secondaryCtaLabel}
-                <span aria-hidden>→</span>
-              </Link>
-            ) : null}
-          </div>
+            </div>
+          ) : null}
         </div>
 
         {imageUrl ? (
-          <div className="relative aspect-[4/5] w-full overflow-hidden rounded-2xl">
+          <div className="relative aspect-[4/5] w-full max-w-sm overflow-hidden rounded-2xl">
             <Image
               src={imageUrl}
               alt={imageAlt ?? title}
@@ -115,6 +157,73 @@ export default function PromoPrimary({
             />
           </div>
         ) : null}
+      </div>
+
+      <div className="mt-12 space-y-4">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <h3 className="text-sm font-semibold uppercase tracking-[0.2em] text-muted-foreground">This Week&apos;s Lineup</h3>
+        </div>
+
+        <div className="grid gap-4 md:grid-cols-2">
+          {promotionEntries.map((promo, idx) => (
+            <article
+              key={`${promo.day}-${promo.title}-${idx}`}
+              className="group relative overflow-hidden rounded-2xl border border-border/60 bg-card/80 p-5 shadow-sm transition hover:border-primary/40 hover:shadow-lg"
+            >
+              <div className="flex items-start justify-between gap-4">
+                <div>
+                  <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">{promo.day}</p>
+                  <h4 className="mt-1 text-lg font-semibold text-foreground">{promo.title}</h4>
+                </div>
+                {promo.tag ? (
+                  <span className="rounded-full border border-border/60 bg-muted px-3 py-1 text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
+                    {promo.tag}
+                  </span>
+                ) : null}
+              </div>
+
+              {promo.description ? (
+                <p className="mt-2 text-sm text-muted-foreground">{promo.description}</p>
+              ) : null}
+
+              <div className="mt-3 flex flex-wrap items-center gap-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                {promo.timeRange ? (
+                  <span className="inline-flex items-center rounded-full bg-muted px-3 py-1 text-[11px] text-muted-foreground">
+                    {promo.timeRange}
+                  </span>
+                ) : null}
+                {promo.highlight ? (
+                  <span className="inline-flex items-center rounded-full bg-primary/10 px-3 py-1 text-[11px] font-semibold text-primary">
+                    {promo.highlight}
+                  </span>
+                ) : null}
+              </div>
+
+              {promo.perks && promo.perks.length > 0 ? (
+                <ul className="mt-3 space-y-1 text-sm text-muted-foreground">
+                  {promo.perks.map((perk, perkIdx) => (
+                    <li key={`${promo.title}-perk-${perkIdx}`} className="flex items-start gap-2">
+                      <span className="mt-1 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-primary" />
+                      <span>{perk}</span>
+                    </li>
+                  ))}
+                </ul>
+              ) : null}
+
+              {promo.ctaLabel && promo.ctaHref ? (
+                <div className="mt-4">
+                  <Link
+                    href={promo.ctaHref}
+                    className="inline-flex items-center gap-2 text-sm font-semibold text-primary transition hover:text-primary/80"
+                  >
+                    {promo.ctaLabel}
+                    <span aria-hidden>→</span>
+                  </Link>
+                </div>
+              ) : null}
+            </article>
+          ))}
+        </div>
       </div>
     </section>
   );

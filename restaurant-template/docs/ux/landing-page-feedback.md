@@ -122,7 +122,7 @@ Note: provided from prior knowledge; we’ll validate and refine together.
 
 ## 11) Next Steps (Ucodex Backlog)
 - Decide primary CTA (Reserve vs Order) → reflect in hero and footer.
-- Choose top‑nav variant (`pills`, `segments`, or `more-sheet`).
+- Top-nav variant confirmed — keep current implementation (primary links plus overflow sheet).
 - Approve hero media (poster image + optional video spec); compress and add to CDN.
 - Confirm sections order and which are optional for MVP (Gallery/Map).
 - Pick Newsletter vs Loyalty capture for the landing card.

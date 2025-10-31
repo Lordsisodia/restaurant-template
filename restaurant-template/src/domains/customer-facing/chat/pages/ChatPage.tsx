@@ -30,6 +30,7 @@ export default async function ChatPage() {
             modelOptions={modelOptions}
             defaultModel="concierge"
             showToolbar={false}
+            showUserName={false}
             disableMinHeight
             compact
             descriptionClassName="text-xs sm:text-sm"

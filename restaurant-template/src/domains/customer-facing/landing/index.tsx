@@ -10,7 +10,7 @@ import { MenuRenderer } from './sections/menu-section';
 import { StoryRenderer } from './sections/story-section';
 import { MapRenderer } from './sections/map-section';
 import { CtaRenderer } from './sections/cta-section';
-import { PromoRenderer, type PromoVariant } from './sections/promo-section';
+import { PromoRenderer, type PromoVariant, type PromoContent } from './sections/promo-section';
 import { SpecialsRenderer } from './sections/specials-section';
 import { InstagramRenderer } from './sections/instagram-section';
 import { GalleryRenderer } from './sections/gallery-section';
@@ -29,6 +29,103 @@ export default async function LandingPage() {
   const promoConfig = (features.promo as Record<string, any> | undefined) ?? {};
   const deliveryPartners = (features.delivery as Record<string, any> | undefined)?.partners ?? [];
   const deliveryPartnerList = Array.isArray(deliveryPartners) ? deliveryPartners : [];
+
+  const optionalString = (value: unknown): string | undefined => {
+    if (typeof value !== 'string') return undefined;
+    const trimmed = value.trim();
+    return trimmed.length > 0 ? trimmed : undefined;
+  };
+
+  type PromotionItem = NonNullable<PromoContent['promotions']>[number];
+
+  const defaultWeeklyPromotions: PromotionItem[] = [
+    {
+      day: 'Monday',
+      title: 'BOGO Espresso Martinis',
+      description: 'Buy one espresso martini and your second is on the house during golden hour.',
+      timeRange: '5:00 – 7:00 PM',
+      highlight: '2-for-1 Drinks',
+      perks: ['Members earn 2× loyalty points'],
+    },
+    {
+      day: 'Tuesday',
+      title: '20% Off Wood-Fired Pizzas',
+      description: 'All signature pies are 20% off — perfect for a midweek treat.',
+      timeRange: 'All day',
+      highlight: 'Kitchen Special',
+    },
+    {
+      day: 'Thursday',
+      title: 'Lounge Karaoke Night',
+      description: 'Sing with our house band and enjoy complimentary snacks between sets.',
+      timeRange: '8:00 – 11:00 PM',
+      highlight: 'Live Entertainment',
+      perks: ['Free entry for members', 'Happy hour pricing on cocktails'],
+    },
+    {
+      day: 'Friday',
+      title: 'Craft Beer & Bites',
+      description: 'Complimentary chef bite with every draft beer ordered during the night session.',
+      timeRange: '6:00 – 10:00 PM',
+      highlight: 'Kitchen Pairing',
+    },
+    {
+      day: 'Saturday',
+      title: 'Sunset Espresso Sessions',
+      description: 'DJ-curated sets, signature cocktails, and wood-fired bites every weekend.',
+      timeRange: '5:00 PM – Late',
+      highlight: 'Weekend Spotlight',
+      ctaLabel: 'Reserve a Table',
+      ctaHref: '/reservations',
+    },
+    {
+      day: 'Sunday',
+      title: 'Family Brunch Club',
+      description: 'Kids eat free with any adult entrée. Acoustic set from 11:00 AM.',
+      timeRange: '10:00 AM – 2:00 PM',
+      highlight: 'Family Day',
+    },
+  ];
+
+  const sanitizePromotions = (input: unknown): PromotionItem[] => {
+    if (!Array.isArray(input)) {
+      return defaultWeeklyPromotions;
+    }
+
+    const sanitized = input
+      .map((entry) => {
+        if (!entry || typeof entry !== 'object') return null;
+        const raw = entry as Record<string, unknown>;
+
+        const day = optionalString(raw.day);
+        const title = optionalString(raw.title);
+        if (!day || !title) return null;
+
+        const description = optionalString(raw.description);
+        const timeRange = optionalString(raw.timeRange ?? raw.schedule);
+        const highlight = optionalString(raw.highlight ?? raw.badge);
+        const tag = optionalString(raw.tag);
+        const ctaLabel = optionalString(raw.ctaLabel);
+        const ctaHref = optionalString(raw.ctaHref);
+
+        let perks: string[] | undefined;
+        if (Array.isArray(raw.perks)) {
+          const cleanPerks = raw.perks
+            .map((perk) => optionalString(perk))
+            .filter((perk): perk is string => Boolean(perk));
+          if (cleanPerks.length > 0) {
+            perks = cleanPerks;
+          }
+        }
+
+        return { day, title, description, timeRange, highlight, tag, ctaLabel, ctaHref, perks } satisfies PromotionItem;
+      })
+      .filter((item): item is PromotionItem => Boolean(item));
+
+    return sanitized.length > 0 ? sanitized : defaultWeeklyPromotions;
+  };
+
+  const resolvedPromotions = sanitizePromotions(promoConfig.promotions);
 
   const heroImage: string = brand.heroUrl || brand.hero || 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=1920&q=80';
   const heroImages: string[] | undefined = Array.isArray(heroConfig.images) ? heroConfig.images : undefined;
@@ -242,8 +339,7 @@ export default async function LandingPage() {
     badge: promoConfig.badge ?? 'New',
     ctaLabel: promoConfig.ctaLabel ?? 'See Promotions',
     ctaHref: promoConfig.ctaHref ?? '/promotions',
-    secondaryCtaLabel: promoConfig.secondaryCtaLabel ?? (waDigits ? 'Book via WhatsApp' : undefined),
-    secondaryCtaHref: promoConfig.secondaryCtaHref ?? (waDigits ? `https://wa.me/${waDigits}` : undefined),
+    promotions: resolvedPromotions,
   };
 
   // Story config (TODO: Configure in siteConfig)

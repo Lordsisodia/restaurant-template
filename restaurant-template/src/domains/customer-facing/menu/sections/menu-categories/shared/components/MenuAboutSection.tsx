@@ -21,20 +21,25 @@ const MenuAboutSection = ({ about }: MenuAboutSectionProps) => {
   const ctaHref = about?.ctaHref ?? '/order';
 
   return (
-    <div className="mx-auto mt-16 max-w-2xl rounded-xl border border-elementree-light bg-gradient-to-br from-elementree-light to-white p-6 shadow-sm">
-      <h3 className="font-serif text-xl font-medium text-elementree-water">{heading}</h3>
-      <div className="mt-4 space-y-4 text-sm text-muted-foreground">
-        {paragraphs.map((paragraph, index) => (
-          <p key={index}>{paragraph}</p>
-        ))}
-      </div>
-      <div className="mt-6 flex justify-center">
-        <Button asChild className="rounded-full bg-elementree-water shadow-md transition-transform hover:scale-105 hover:bg-elementree-water/90">
-          <Link href={ctaHref}>
-            <ShoppingBag className="mr-2" />
-            {ctaLabel}
-          </Link>
-        </Button>
+    <div className="mx-auto mt-16 max-w-3xl overflow-hidden rounded-3xl border border-white/10 bg-black/70 p-8 shadow-[0_24px_80px_rgba(0,0,0,0.55)] backdrop-blur-xl">
+      <div className="space-y-5">
+        <h3 className="text-2xl font-semibold text-white md:text-3xl">{heading}</h3>
+        <div className="space-y-4 text-sm leading-relaxed text-white/75 md:text-base">
+          {paragraphs.map((paragraph, index) => (
+            <p key={index}>{paragraph}</p>
+          ))}
+        </div>
+        <div className="pt-4">
+          <Button
+            asChild
+            className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-primary/80 px-6 py-3 text-sm font-semibold text-white transition-all hover:scale-105 hover:bg-primary"
+          >
+            <Link href={ctaHref}>
+              <ShoppingBag className="h-4 w-4" />
+              {ctaLabel}
+            </Link>
+          </Button>
+        </div>
       </div>
     </div>
   );

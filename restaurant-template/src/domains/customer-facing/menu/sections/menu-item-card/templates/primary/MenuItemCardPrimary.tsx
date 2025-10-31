@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import { Flame, Leaf, Wheat, Clock } from 'lucide-react';
-import { Badge } from '@/domains/shared/components';
+import { AnimatedText, Badge } from '@/domains/shared/components';
 import { getMenuItemImage } from '@/domains/customer-facing/menu/shared/utils/menu-images';
 import type { MenuItem } from '@/domains/customer-facing/menu/shared/types';
 import type { MenuItemCardContent } from '../../types';
@@ -130,7 +130,7 @@ export default function MenuItemCardPrimary({
 
   return (
     <div
-      className="group relative flex h-full w-full cursor-pointer flex-col overflow-hidden rounded-3xl border border-white/12 bg-white/[0.04] text-white shadow-[0_20px_60px_rgba(0,0,0,0.45)] backdrop-blur-2xl transition-transform duration-300 hover:-translate-y-1 hover:shadow-[0_28px_80px_rgba(255,152,56,0.25)]"
+      className="group relative flex h-full w-full cursor-pointer flex-col overflow-hidden rounded-3xl border border-white/12 bg-black/70 text-white shadow-[0_20px_60px_rgba(0,0,0,0.45)] backdrop-blur-2xl transition-transform duration-300 hover:-translate-y-1 hover:shadow-[0_28px_80px_rgba(255,152,56,0.25)]"
       onClick={handleSelect}
       role="button"
       tabIndex={0}
@@ -166,7 +166,7 @@ export default function MenuItemCardPrimary({
           src={image}
           alt={name}
           fill
-          sizes="(max-width: 768px) 90vw, 360px"
+          sizes="(max-width: 768px) 90vw, 420px"
           className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
           priority={false}
         />
@@ -191,21 +191,28 @@ export default function MenuItemCardPrimary({
           ) : null}
         </div>
 
+        <div className="absolute bottom-3 left-3 flex items-center gap-2 rounded-full border border-white/20 bg-black/70 px-4 py-1.5 text-sm font-semibold text-white shadow-lg">
+          {formatPrice(price, currency)}
+        </div>
+
       </div>
 
-      <div className="space-y-3 border-t border-white/10 bg-white/[0.05] p-5">
-        <div className="flex items-start justify-between gap-4">
-          <div className="space-y-1">
-            <h3 className="text-base font-semibold text-white/95">{name}</h3>
-            {description ? (
-              <p className="text-xs text-white/60 line-clamp-2">
-                {description}
-              </p>
-            ) : null}
-          </div>
-          <div className="shrink-0 text-lg font-semibold text-white/90">
-            {formatPrice(price, currency)}
-          </div>
+      <div className="space-y-3 border-t border-white/10 bg-black/40 p-5">
+        <div className="space-y-1">
+          <AnimatedText
+            text={name}
+            as="h3"
+            className="items-start justify-start gap-1"
+            textClassName="text-left text-lg font-semibold text-white/95"
+            underlineGradient="from-amber-400 via-orange-500 to-pink-500"
+            underlineHeight="h-[2px]"
+            underlineOffset="mt-1"
+          />
+          {description ? (
+            <p className="text-xs text-white/60 line-clamp-2">
+              {description}
+            </p>
+          ) : null}
         </div>
 
         {prepTimeMin != null ? (

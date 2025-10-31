@@ -1,11 +1,14 @@
 'use client';
 
-import { FormEvent, useState } from 'react';
+import { FormEvent, useMemo, useRef, useState } from 'react';
 
 import type { LucideIcon } from 'lucide-react';
 import {
+  ArrowUp,
   CalendarClock,
   ChartNetworkIcon,
+  FolderCode,
+  Globe,
   ImageIcon,
   MapIcon,
   MessageCircle,
@@ -14,6 +17,7 @@ import {
   PenToolIcon,
   ScanTextIcon,
   SendHorizontal,
+  BrainCog,
   SparklesIcon,
   UtensilsCrossed,
 } from 'lucide-react';
@@ -76,6 +80,10 @@ export type AiAssistantCardProps = {
    */
   showToolbar?: boolean;
   /**
+   * When false, hides the uppercase user name pill in the header.
+   */
+  showUserName?: boolean;
+  /**
    * When true, removes the default minimum height constraint so the card can shrink.
    */
   disableMinHeight?: boolean;
@@ -116,6 +124,7 @@ export const Component = ({
   className,
   contentClassName,
   showToolbar = true,
+  showUserName = true,
   disableMinHeight = false,
   compact = false,
   descriptionClassName,
@@ -302,9 +311,11 @@ export const Component = ({
               </svg>
             </div>
             <div className="flex flex-col space-y-2 text-left">
-              <span className="text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground/80">
-                {userName}
-              </span>
+              {showUserName && userName ? (
+                <span className="text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground/80">
+                  {userName}
+                </span>
+              ) : null}
               <h3 className={cn('text-xl font-semibold tracking-tight text-foreground', compact && 'text-lg')}>
                 {headline}
               </h3>
@@ -350,10 +361,48 @@ export const Component = ({
                   </div>
                 </div>
               </div>
-              <div className="border-t border-border/60 bg-background/95">
-                <div className="flex items-center justify-between gap-2 border-b border-border/60 px-3 py-2">
+              <form
+                onSubmit={handleSubmit}
+                className="flex flex-col gap-3 border-t border-border/60 bg-background/95 px-3 py-3"
+              >
+                <div
+                  className={cn(
+                    'relative flex flex-1 rounded-2xl border border-border/30 bg-[#14161c] transition-shadow focus-within:border-primary focus-within:shadow-[0_0_0_1px_rgba(var(--primary-rgb,255,255,255),0.35)]',
+                    compact && 'rounded-xl',
+                  )}
+                >
+                  <Textarea
+                    value={draft}
+                    onChange={(event) => setDraft(event.target.value)}
+                    placeholder="Ask me anything..."
+                    className={cn(
+                      'min-h-[96px] w-full resize-none border-none bg-transparent py-4 pl-12 pr-28 text-sm leading-relaxed text-foreground shadow-none focus-visible:ring-0 focus-visible:ring-offset-0 placeholder:text-muted-foreground/60',
+                      compact && 'min-h-[72px]',
+                    )}
+                  />
+                  <div className="pointer-events-none absolute left-4 top-4 flex h-6 w-6 items-center justify-center text-muted-foreground/80">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" className="size-4">
+                      <g fill="none" stroke="currentColor" strokeWidth="1.5">
+                        <circle cx="11.5" cy="11.5" r="9.5" />
+                        <path strokeLinecap="round" d="M18.5 18.5L22 22" />
+                      </g>
+                    </svg>
+                  </div>
+                  <div className="absolute bottom-3 right-3 flex items-center gap-1">
+                    <Button type="button" variant="ghost" size="icon" className="size-9 text-muted-foreground">
+                      <Mic className="size-4" />
+                      <span className="sr-only">Record a voice note</span>
+                    </Button>
+                    <Button type="submit" disabled={!canSend} className="gap-1">
+                      Send
+                      <SendHorizontal className="size-4" />
+                    </Button>
+                  </div>
+                </div>
+
+                <div className="flex flex-col gap-2 rounded-xl border border-border/60 bg-muted/40 px-3 py-2 sm:flex-row sm:items-center sm:justify-between">
                   <Select defaultValue={defaultModel}>
-                    <SelectTrigger className="h-8 w-[120px] bg-background text-xs">
+                    <SelectTrigger className="h-8 w-full bg-background text-xs text-foreground sm:w-[140px]">
                       <SelectValue placeholder="Select a model" />
                     </SelectTrigger>
                     <SelectContent>
@@ -364,43 +413,38 @@ export const Component = ({
                       ))}
                     </SelectContent>
                   </Select>
-                </div>
-                <form onSubmit={handleSubmit} className="px-3 py-3">
-                  <div className="flex w-full items-end gap-2">
-                    <div
-                      className={cn(
-                        'flex flex-1 items-center rounded-xl border border-border/70 bg-muted/40 px-3 py-2 transition-shadow focus-within:border-primary/60 focus-within:shadow-[0_0_0_1px_rgba(var(--primary-rgb,255,255,255),0.25)]',
-                        compact && 'py-2',
-                      )}
+
+                  <div className="flex flex-wrap items-center justify-end gap-1">
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      className="h-8 gap-2 px-3 text-xs text-muted-foreground transition hover:text-foreground"
                     >
-                      <Textarea
-                        rows={1}
-                        value={draft}
-                        onChange={(event) => setDraft(event.target.value)}
-                        placeholder="Ask me anything..."
-                        className={cn(
-                          'max-h-28 min-h-[36px] flex-1 resize-none border-none bg-transparent px-0 text-sm leading-relaxed shadow-none focus-visible:ring-0 focus-visible:ring-offset-0 placeholder:text-muted-foreground/70',
-                          compact && 'text-sm',
-                        )}
-                      />
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <Button type="button" variant="ghost" size="icon" className="size-9 text-muted-foreground">
-                        <Paperclip className="size-4" />
-                        <span className="sr-only">Attach a file</span>
-                      </Button>
-                      <Button type="button" variant="ghost" size="icon" className="size-9 text-muted-foreground">
-                        <Mic className="size-4" />
-                        <span className="sr-only">Record a voice note</span>
-                      </Button>
-                      <Button type="submit" disabled={!canSend} className="gap-1">
-                        Send
-                        <SendHorizontal className="size-4" />
-                      </Button>
-                    </div>
+                      <Paperclip className="size-3.5" />
+                      Attach
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      className="h-8 gap-2 px-3 text-xs text-muted-foreground transition hover:text-foreground"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="1em"
+                        height="1em"
+                        viewBox="0 0 24 24"
+                        className="size-3.5"
+                      >
+                        <g fill="none" stroke="currentColor" strokeWidth="1.5">
+                          <path strokeLinecap="round" d="M13.294 7.17L12 12l-1.294 4.83" />
+                          <path d="M2 12c0-4.714 0-7.071 1.464-8.536C4.93 2 7.286 2 12 2s7.071 0 8.535 1.464C22 4.93 22 7.286 22 12s0 7.071-1.465 8.535C19.072 22 16.714 22 12 22s-7.071 0-8.536-1.465C2 19.072 2 16.714 2 12Z" />
+                        </g>
+                      </svg>
+                      Shortcuts
+                    </Button>
                   </div>
-                </form>
-              </div>
+                </div>
+              </form>
             </div>
           </div>
         </div>

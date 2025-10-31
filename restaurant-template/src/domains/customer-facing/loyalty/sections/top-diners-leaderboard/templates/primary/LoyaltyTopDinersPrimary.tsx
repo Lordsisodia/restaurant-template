@@ -22,6 +22,7 @@ export default function LoyaltyTopDinersPrimary(props: LoyaltyTopDinersContent) 
         as="h2"
         className="mb-2"
         titleClassName="text-xl font-semibold"
+        pillText="Leaderboard"
       />
 
       {members.length === 0 ? (

@@ -101,7 +101,7 @@ export default function MenuPageImproved() {
   return (
     <div className="min-h-screen bg-background pb-20">
       {/* HEADER SECTION */}
-      <section className="w-full py-8 px-6">
+      <section className="w-full pt-28 pb-8 px-6 sm:pt-32">
         <div className="mx-auto w-full max-w-5xl">
           <SectionHeading
             pillText="Our Menu"

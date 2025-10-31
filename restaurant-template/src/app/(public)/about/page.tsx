@@ -17,6 +17,7 @@ const ABOUT_DATA: AboutPageData = {
   
   venueGallery: {
     title: "Our Space in Motion",
+    pillText: "Our Space",
     subtitle: "Snapshots from our space",
     intro: "From sunlit mornings to vinyl-fuelled nights, here’s a rolling look at Draco’s energy—bold coffee rituals, late-night plates, and the community that shaped us.",
     layout: 'slider',

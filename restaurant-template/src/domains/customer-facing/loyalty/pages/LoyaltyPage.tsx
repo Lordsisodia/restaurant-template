@@ -101,7 +101,7 @@ export default async function LoyaltyPage() {
     title: 'Membership Perks Snapshot',
     subtitle: 'Tap a tier to preview how Draco rewards grow for loyal guests.',
     pillText: 'Membership',
-    pillTone: 'dark' as const,
+    pillTone: 'light' as const,
     titleClassName: 'text-3xl font-semibold sm:text-4xl',
   };
 
@@ -135,7 +135,7 @@ export default async function LoyaltyPage() {
   };
 
   return (
-    <div className="mx-auto flex w-full max-w-5xl flex-col gap-14 px-6 py-16">
+    <div className="mx-auto flex w-full max-w-5xl flex-col gap-14 px-6 pb-16 pt-24 sm:pt-28">
       <section className="flex flex-col items-center gap-8 text-center">
         <SectionHeading centered {...membershipHeading} />
         <MembershipCard {...membershipCardProps} />

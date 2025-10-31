@@ -83,62 +83,181 @@ function hasHtmlTags(content: string) {
   return /<\/?[a-z][\s\S]*>/i.test(content);
 }
 
-function convertPlainTextToHtml(content: string) {
+function escapeAttribute(value: string) {
+  return value
+    .replace(/&/g, '&amp;')
+    .replace(/"/g, '&quot;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+}
+
+function applyInlineFormatting(text: string) {
+  const placeholderPrefix = '@@CODEPH_';
+  let placeholderIndex = 0;
+  const codeLookup: Record<string, string> = {};
+
+  const escaped = htmlEscape(text);
+
+  const protectedCode = escaped.replace(/`([^`]+)`/g, (_, code) => {
+    const key = `${placeholderPrefix}${placeholderIndex}@@`;
+    placeholderIndex += 1;
+    codeLookup[key] = `<code>${code}</code>`;
+    return key;
+  });
+
+  const withLinks = protectedCode.replace(
+    /\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g,
+    (_, label, url) => `<a href="${escapeAttribute(url)}" target="_blank" rel="noreferrer noopener">${label}</a>`,
+  );
+
+  const withStrong = withLinks
+    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+    .replace(/__(.+?)__/g, '<strong>$1</strong>');
+
+  const withEmphasis = withStrong
+    .replace(/\*(.+?)\*/g, '<em>$1</em>')
+    .replace(/_(.+?)_/g, '<em>$1</em>');
+
+  const restored = Object.entries(codeLookup).reduce(
+    (acc, [key, value]) => acc.replace(new RegExp(key, 'g'), value),
+    withEmphasis,
+  );
+
+  return restored;
+}
+
+export function convertPlainTextToHtml(content: string) {
   const normalized = content.replace(/\r\n/g, '\n').trim();
   if (!normalized) return '';
 
-  const rawBlocks = normalized.split(/\n{2,}/);
-  const unorderedPattern = /^[-*+]\s+/;
-  const orderedPattern = /^\d+[.)]\s+/;
-  const htmlBlocks: string[] = [];
+  const lines = normalized.split('\n');
+  const blocks: string[] = [];
 
-  for (let i = 0; i < rawBlocks.length; i += 1) {
-    const block = rawBlocks[i]?.trim();
-    if (!block) continue;
+  let paragraphBuffer: string[] = [];
+  let listBuffer: { type: 'ul' | 'ol'; items: string[] } | null = null;
+  let inCode = false;
+  let codeLanguage = '';
+  let codeLines: string[] = [];
 
-    const lines = block
-      .split('\n')
-      .map((line) => line.trim())
-      .filter(Boolean);
+  const flushParagraph = () => {
+    if (paragraphBuffer.length === 0) return;
+    const paragraph = applyInlineFormatting(paragraphBuffer.join(' '));
+    blocks.push(`<p>${paragraph}</p>`);
+    paragraphBuffer = [];
+  };
 
-    if (lines.length === 0) continue;
+  const flushList = () => {
+    if (!listBuffer) return;
+    const items = listBuffer.items.map((item) => `<li>${applyInlineFormatting(item)}</li>`).join('');
+    blocks.push(`<${listBuffer.type}>${items}</${listBuffer.type}>`);
+    listBuffer = null;
+  };
 
-    const isUnorderedList = lines.every((line) => unorderedPattern.test(line));
-    if (isUnorderedList) {
-      const items = lines
-        .map((line) => `<li>${htmlEscape(line.replace(unorderedPattern, ''))}</li>`)
-        .join('');
-      htmlBlocks.push(`<ul>${items}</ul>`);
+  const flushCode = () => {
+    if (codeLines.length === 0) return;
+    const languageAttr = codeLanguage ? ` class="language-${escapeAttribute(codeLanguage)}"` : '';
+    const code = htmlEscape(codeLines.join('\n'));
+    blocks.push(`<pre><code${languageAttr}>${code}</code></pre>`);
+    codeLines = [];
+    codeLanguage = '';
+  };
+
+  for (let i = 0; i < lines.length; i += 1) {
+    const rawLine = lines[i] ?? '';
+    const trimmed = rawLine.trim();
+
+    if (trimmed.startsWith('```')) {
+      if (inCode) {
+        flushCode();
+        inCode = false;
+      } else {
+        flushParagraph();
+        flushList();
+        inCode = true;
+        codeLanguage = trimmed.slice(3).trim();
+        codeLines = [];
+      }
       continue;
     }
 
-    const isOrderedList = lines.every((line) => orderedPattern.test(line));
-    if (isOrderedList) {
-      const items = lines
-        .map((line) => `<li>${htmlEscape(line.replace(orderedPattern, ''))}</li>`)
-        .join('');
-      htmlBlocks.push(`<ol>${items}</ol>`);
+    if (inCode) {
+      codeLines.push(rawLine);
       continue;
     }
 
-    const [firstLine] = lines;
-    const isHeadingCandidate =
-      lines.length === 1 &&
-      firstLine.length <= 80 &&
-      !/[.!?]$/.test(firstLine) &&
-      /^[A-Za-z0-9]/.test(firstLine) &&
-      (i < rawBlocks.length - 1);
-
-    if (isHeadingCandidate) {
-      htmlBlocks.push(`<h2>${htmlEscape(firstLine)}</h2>`);
+    if (!trimmed) {
+      flushParagraph();
+      flushList();
       continue;
     }
 
-    const paragraph = lines.map((line) => htmlEscape(line)).join(' ');
-    htmlBlocks.push(`<p>${paragraph}</p>`);
+    if (trimmed === '---' || trimmed === '***' || trimmed === '___') {
+      flushParagraph();
+      flushList();
+      blocks.push('<hr />');
+      continue;
+    }
+
+    const headingMatch = trimmed.match(/^(#{1,6})\s+(.*)$/);
+    if (headingMatch) {
+      flushParagraph();
+      flushList();
+      const hashes = headingMatch[1].length;
+      const mappedLevel = hashes === 1 ? 'h2' : hashes === 2 ? 'h3' : 'h4';
+      const headingText = applyInlineFormatting(headingMatch[2]);
+      blocks.push(`<${mappedLevel}>${headingText}</${mappedLevel}>`);
+      continue;
+    }
+
+    if (/^>\s?/.test(trimmed)) {
+      flushParagraph();
+      flushList();
+      const quoteLines: string[] = [];
+      let j = i;
+      while (j < lines.length) {
+        const candidate = lines[j]?.trim();
+        if (!candidate || !candidate.startsWith('>')) break;
+        quoteLines.push(candidate.replace(/^>\s?/, ''));
+        j += 1;
+      }
+      const quote = applyInlineFormatting(quoteLines.join(' '));
+      blocks.push(`<blockquote><p>${quote}</p></blockquote>`);
+      i = j - 1;
+      continue;
+    }
+
+    const orderedMatch = trimmed.match(/^(\d+)[.)]\s+(.*)$/);
+    if (orderedMatch) {
+      flushParagraph();
+      if (!listBuffer || listBuffer.type !== 'ol') {
+        flushList();
+        listBuffer = { type: 'ol', items: [] };
+      }
+      listBuffer.items.push(orderedMatch[2].trim());
+      continue;
+    }
+
+    const unorderedMatch = trimmed.match(/^[-*+]\s+(.*)$/);
+    if (unorderedMatch) {
+      flushParagraph();
+      if (!listBuffer || listBuffer.type !== 'ul') {
+        flushList();
+        listBuffer = { type: 'ul', items: [] };
+      }
+      listBuffer.items.push(unorderedMatch[1].trim());
+      continue;
+    }
+
+    paragraphBuffer.push(trimmed);
   }
 
-  return htmlBlocks.join('');
+  flushParagraph();
+  flushList();
+  if (inCode) {
+    flushCode();
+  }
+
+  return blocks.join('');
 }
 
 function ensureHtmlContent(content: string | null | undefined) {
@@ -236,7 +355,7 @@ export default function PostPrimary(post: PostContent) {
 
           {post.content ? (
             <div
-              className="prose prose-lg prose-invert max-w-none text-white/80 prose-headings:font-semibold prose-headings:text-white prose-h2:mt-14 prose-h2:mb-6 prose-h2:text-3xl prose-h2:tracking-tight prose-h3:mt-10 prose-h3:mb-4 prose-h3:text-2xl prose-p:mb-6 prose-p:leading-8 prose-p:rounded-3xl prose-p:border prose-p:border-white/10 prose-p:bg-[#0b0b10] prose-p:px-6 prose-p:py-6 prose-a:text-amber-300 prose-a:no-underline hover:prose-a:text-amber-200 prose-strong:text-white prose-ul:my-6 prose-ul:list-disc prose-ul:rounded-3xl prose-ul:border prose-ul:border-white/10 prose-ul:bg-[#0b0b10] prose-ul:px-6 prose-ul:py-6 prose-ol:my-6 prose-ol:list-decimal prose-ol:rounded-3xl prose-ol:border prose-ol:border-white/10 prose-ol:bg-[#0b0b10] prose-ol:px-6 prose-ol:py-6 prose-li:text-white/75 prose-li:marker:text-amber-300 prose-img:rounded-3xl prose-img:border prose-img:border-white/10 prose-img:shadow-xl prose-blockquote:border-l-4 prose-blockquote:border-amber-400/60 prose-blockquote:pl-6 prose-blockquote:text-white/70"
+              className="prose prose-lg prose-invert max-w-none text-white/80 prose-headings:font-semibold prose-headings:text-white prose-h2:mt-12 prose-h2:mb-6 prose-h2:text-3xl prose-h2:tracking-tight prose-h3:mt-10 prose-h3:mb-4 prose-h3:text-2xl prose-h4:mt-8 prose-h4:mb-3 prose-h4:text-xl prose-p:mb-6 prose-p:leading-8 prose-strong:text-white prose-em:text-white/80 prose-ul:my-6 prose-ul:list-disc prose-ul:ml-6 prose-ol:my-6 prose-ol:list-decimal prose-ol:ml-6 prose-li:leading-relaxed prose-li:marker:text-amber-300 prose-a:text-amber-300 prose-a:no-underline hover:prose-a:text-amber-200 prose-code:rounded prose-code:bg-white/10 prose-code:px-1.5 prose-code:py-0.5 prose-pre:bg-[#0f0f15] prose-pre:border prose-pre:border-white/10 prose-pre:text-sm prose-pre:text-white prose-img:rounded-3xl prose-img:border prose-img:border-white/10 prose-img:shadow-xl prose-figcaption:text-sm prose-figcaption:text-white/60 prose-blockquote:border-l-4 prose-blockquote:border-amber-400/60 prose-blockquote:pl-6 prose-blockquote:text-white/70 prose-hr:my-12 prose-hr:border-white/20"
               dangerouslySetInnerHTML={{ __html: richHtml || body }}
             />
           ) : (

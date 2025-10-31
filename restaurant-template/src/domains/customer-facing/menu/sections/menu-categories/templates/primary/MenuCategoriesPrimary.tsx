@@ -1,7 +1,8 @@
 "use client";
 
-import { useMemo, useState } from 'react';
-import { motion } from 'framer-motion';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
+import { cn } from '@/lib/utils';
 import { groupMenuItemsByCategory } from '@/domains/customer-facing/menu/shared/hooks';
 import type { MenuCategory, MenuItem } from '@/domains/customer-facing/menu/shared/types';
 import MenuLoadingState from '../../shared/components/MenuLoadingState';
@@ -17,6 +18,7 @@ import {
   type MenuItemDetailContent,
 } from '@/domains/customer-facing/menu/sections/menu-item-detail';
 import type { MenuCategoriesContent } from '../../types';
+import { AnimatedText, SectionHeading } from '@/domains/shared/components';
 
 const GROUP_DEFINITIONS = [
   { key: 'breakfast', label: 'Breakfast', patterns: [/breakfast/i, /brunch/i, /morning/i] },
@@ -189,13 +191,205 @@ export default function MenuCategoriesPrimary({
       .filter((value): value is GroupAccumulator => Boolean(value));
   }, [itemsByCategory, sortedCategories]);
 
+  const CategoryPill = ({ label, count }: { label: string; count: number }) => {
+    const shellClass = cn('relative flex h-1 w-1 items-center justify-center rounded-full bg-white/35');
+    const pingClass = 'flex h-2 w-2 animate-ping items-center justify-center rounded-full bg-white';
+    const coreClass = 'absolute top-1/2 left-1/2 flex h-1 w-1 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-white/80';
+
+    return (
+      <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/8 px-4 py-2 text-xs font-medium uppercase tracking-[0.2em] text-white/80 shadow-sm backdrop-blur">
+        <span className={shellClass}>
+          <span className={pingClass}>
+            <span className={pingClass}></span>
+          </span>
+          <span className={coreClass}></span>
+        </span>
+        {label}
+        <span className="text-white/50">•</span>
+        <span>
+          {count} {count === 1 ? 'item' : 'items'}
+        </span>
+      </span>
+    );
+  };
+
+  const categoriesWithItems = useMemo(() => {
+    return sortedCategories.filter((category) => (itemsByCategory[category.id] ?? []).length > 0);
+  }, [itemsByCategory, sortedCategories]);
+
+  const [activeCategoryId, setActiveCategoryId] = useState<string | null>(null);
+  const [selectorOpen, setSelectorOpen] = useState(false);
+  const selectorRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    if (categoriesWithItems.length === 0) {
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        let maxEntry: IntersectionObserverEntry | null = null;
+
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) {
+            return;
+          }
+
+          if (!maxEntry || entry.intersectionRatio > maxEntry.intersectionRatio) {
+            maxEntry = entry;
+          }
+        });
+
+        if (maxEntry) {
+          const id = maxEntry.target.getAttribute('data-category-id');
+          setActiveCategoryId(id && id.length > 0 ? id : null);
+        }
+      },
+      {
+        rootMargin: '-200px 0px -55%',
+        threshold: [0.1, 0.25, 0.5],
+      },
+    );
+
+    const sentinel = document.getElementById('menu-category-top-sentinel');
+    if (sentinel) {
+      observer.observe(sentinel);
+    }
+
+    categoriesWithItems.forEach((category) => {
+      const el = document.getElementById(`menu-category-${category.id}`);
+      if (el) {
+        observer.observe(el);
+      }
+    });
+
+    return () => observer.disconnect();
+  }, [categoriesWithItems]);
+
+  useEffect(() => {
+    if (!selectorOpen) {
+      return;
+    }
+
+    const handleClick = (event: MouseEvent) => {
+      if (!selectorRef.current) {
+        return;
+      }
+
+      if (!selectorRef.current.contains(event.target as Node)) {
+        setSelectorOpen(false);
+      }
+    };
+
+    window.addEventListener('mousedown', handleClick);
+    return () => window.removeEventListener('mousedown', handleClick);
+  }, [selectorOpen]);
+
+  const scrollToCategory = (categoryId: string | null) => {
+    if (categoryId === null) {
+      const topEl = document.getElementById('menu-category-top');
+      topEl?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      setActiveCategoryId(null);
+      setSelectorOpen(false);
+      return;
+    }
+
+    const target = document.getElementById(`menu-category-${categoryId}`);
+    target?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    setActiveCategoryId(categoryId);
+    setSelectorOpen(false);
+  };
+
+  const navButtonClass = (isActive: boolean) =>
+    cn(
+      'w-full rounded-xl border px-4 py-3 text-sm font-semibold transition-colors text-left',
+      isActive
+        ? 'border-primary/60 bg-primary/20 text-white shadow-lg shadow-primary/30'
+        : 'border-white/10 bg-white/5 text-white/70 hover:border-white/20 hover:text-white',
+    );
+
+  const totalItems = menuItems.length;
+  const selectedCategoryName = activeCategoryId
+    ? categoriesWithItems.find((category) => category.id === activeCategoryId)?.name ?? 'Category'
+    : 'All Items';
+
   return (
-    <div className="space-y-16">
-      <header className="space-y-3">
-        <p className="text-xs font-semibold uppercase tracking-[0.35em] text-white/60">Menu</p>
-        <h1 className="text-3xl font-semibold text-white md:text-4xl">Browse Our Menu</h1>
-        <p className="text-sm text-white/60 md:text-base">Curated sections keep things simple—jump into breakfast, mains, and drinks without endless scrolling.</p>
+    <div className="space-y-16" id="menu-category-top">
+      <div id="menu-category-top-sentinel" data-category-id="" className="h-px w-px" />
+      <header className="flex justify-center">
+        <SectionHeading
+          pillText="Our Menu"
+          title="Browse Our Menu"
+          subtitle="Curated sections keep things simple—jump into breakfast, mains, and drinks without endless scrolling."
+          centered
+          className="max-w-2xl text-center"
+          titleClassName="text-3xl md:text-4xl font-semibold"
+        />
       </header>
+
+      {categoriesWithItems.length > 0 ? (
+        <div className="relative mx-auto w-full max-w-5xl" ref={selectorRef}>
+          <button
+            type="button"
+            onClick={() => setSelectorOpen((prev) => !prev)}
+            className="flex w-full items-center justify-between rounded-2xl border border-white/15 bg-white/5 px-6 py-4 text-white transition-colors hover:border-white/30 hover:bg-white/10"
+          >
+            <div className="text-left">
+              <p className="text-xs font-semibold uppercase tracking-[0.28em] text-white/60">Categories</p>
+              <p className="mt-1 text-lg font-semibold">
+                {selectedCategoryName}
+                {activeCategoryId ? null : ` • ${totalItems} items`}
+              </p>
+            </div>
+            <motion.span animate={{ rotate: selectorOpen ? 180 : 0 }} transition={{ duration: 0.25 }}>
+              <svg className="h-5 w-5 text-white/70" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M6 9l6 6 6-6" />
+              </svg>
+            </motion.span>
+          </button>
+
+          <AnimatePresence>
+            {selectorOpen ? (
+              <motion.div
+                initial={{ opacity: 0, y: -8, scale: 0.98 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: -8, scale: 0.98 }}
+                transition={{ duration: 0.2 }}
+                className="absolute left-0 right-0 top-[calc(100%+0.75rem)] z-30 rounded-3xl border border-white/15 bg-black/85 p-4 shadow-2xl backdrop-blur-xl"
+              >
+                <div className="grid gap-3 sm:grid-cols-2">
+                  <button
+                    type="button"
+                    className={navButtonClass(activeCategoryId === null)}
+                    onClick={() => scrollToCategory(null)}
+                  >
+                    <span className="flex flex-col">
+                      <span className="text-base font-semibold">All Items</span>
+                      <span className="text-sm text-white/60">{totalItems} total</span>
+                    </span>
+                  </button>
+                  {categoriesWithItems.map((category) => {
+                    const count = itemsByCategory[category.id]?.length ?? 0;
+                    return (
+                      <button
+                        key={category.id}
+                        type="button"
+                        className={navButtonClass(activeCategoryId === category.id)}
+                        onClick={() => scrollToCategory(category.id)}
+                      >
+                        <span className="flex flex-col">
+                          <span className="text-base font-semibold">{category.name ?? 'Category'}</span>
+                          <span className="text-sm text-white/60">{count} {count === 1 ? 'item' : 'items'}</span>
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </motion.div>
+            ) : null}
+          </AnimatePresence>
+        </div>
+      ) : null}
 
       {groupedSections.length > 0 ? (
         <div className="space-y-16">
@@ -215,9 +409,15 @@ export default function MenuCategoriesPrimary({
               >
                 <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
                   <div className="space-y-1">
-                    <h2 className="text-2xl font-semibold text-white md:text-3xl">
-                      {group.label}
-                    </h2>
+                    <AnimatedText
+                      text={group.label}
+                      as="h2"
+                      className="items-start justify-start gap-1"
+                      textClassName="text-left text-2xl font-semibold text-white md:text-3xl"
+                      underlineGradient="from-amber-400 via-orange-500 to-pink-500"
+                      underlineHeight="h-[3px]"
+                      underlineOffset="mt-2"
+                    />
                     {subcategorySummary ? (
                       <p className="text-sm text-white/60 md:text-base">
                         {subcategorySummary}
@@ -238,13 +438,14 @@ export default function MenuCategoriesPrimary({
                     }
 
                     return (
-                      <div key={category.id} className="space-y-4">
+                      <div
+                        key={category.id}
+                        id={`menu-category-${category.id}`}
+                        data-category-id={category.id}
+                        className="space-y-4 scroll-mt-32"
+                      >
                         <div className="flex items-center justify-between">
-                          <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/8 px-4 py-2 text-xs font-medium uppercase tracking-[0.2em] text-white/80 shadow-sm backdrop-blur">
-                            {category.name}
-                            <span className="text-white/50">•</span>
-                            <span>{categoryItems.length} {categoryItems.length === 1 ? 'item' : 'items'}</span>
-                          </span>
+                          <CategoryPill label={category.name ?? 'Category'} count={categoryItems.length} />
                         </div>
 
                         <div className="-mx-2 overflow-x-auto pb-2">
@@ -252,7 +453,7 @@ export default function MenuCategoriesPrimary({
                             {categoryItems.map((item) => (
                               <div
                                 key={item.id}
-                                className="w-[260px] shrink-0 snap-start md:w-[280px] lg:w-[320px]"
+                                className="w-[300px] shrink-0 snap-start md:w-[340px] lg:w-[380px]"
                               >
                                 <MenuItemCardRenderer
                                   content={toCardContent(item)}

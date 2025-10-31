@@ -29,3 +29,8 @@ Use this living document to capture and resolve feedback specific to the menu do
 
 | Date (YYYY-MM-DD) | Source / Owner | Summary | Resolution Date | Notes |
 | --- | --- | --- | --- | --- |
+| 2025-10-31 | Client request | Increase top padding on menu heading so category pills clear sticky nav | 2025-10-31 | Added page-level offset (`pt-24 md:pt-28`) so hero/pills sit fully below sticky nav |
+| 2025-10-31 | Client request | Widen menu cards + reuse landing underline and animated pill accents | 2025-10-31 | Expanded card widths, swapped titles to `AnimatedText`, and added pulsing pill indicator |
+| 2025-10-31 | Client request | Restore sticky category selector for quick navigation | 2025-10-31 | Reinstated dropdown selector with smooth scroll + active tracking |
+| 2025-10-31 | Client request | Give category group headings the landing-style underline treatment | 2025-10-31 | Swapped group titles to `AnimatedText` with gradient underline |
+| 2025-10-31 | Client request | Restyle "About Our Menu" card to match darker theme | 2025-10-31 | Rebuilt panel with dark glass background, white typography, and primary CTA |

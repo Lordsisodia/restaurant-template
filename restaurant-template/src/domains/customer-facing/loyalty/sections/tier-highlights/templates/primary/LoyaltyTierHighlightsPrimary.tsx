@@ -17,6 +17,7 @@ export default function LoyaltyTierHighlightsPrimary(props: LoyaltyTierHighlight
           as="h2"
           className="text-left"
           titleClassName="text-2xl font-semibold"
+          pillText="Tiers"
         />
       ) : null}
 
