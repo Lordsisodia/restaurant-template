@@ -12,19 +12,20 @@ Created `vercel.json` in the repository root with:
 
 ```json
 {
-  "buildCommand": "cd restaurant-template && npm run build",
-  "devCommand": "cd restaurant-template && npm run dev",
-  "installCommand": "cd restaurant-template && npm install",
+  "buildCommand": "npm run build",
+  "devCommand": "npm run dev",
+  "installCommand": "npm install",
   "framework": "nextjs",
-  "outputDirectory": "restaurant-template/.next",
+  "outputDirectory": ".next",
   "rootDirectory": "restaurant-template"
 }
 ```
 
-This tells Vercel:
-- The Next.js app is in the `restaurant-template/` folder
-- All build commands should run from that directory
-- The output is in `restaurant-template/.next`
+**Key Points**:
+- `rootDirectory: "restaurant-template"` tells Vercel to treat this folder as the project root
+- When `rootDirectory` is set, commands run FROM that directory automatically
+- No need for `cd` commands - paths are relative to rootDirectory
+- Output directory is `.next` (relative to rootDirectory)
 
 ## 🚀 Deployment Steps
 
